@@ -1,5 +1,6 @@
 const User = require('../model/User')
 const bcrypt = require('bcrypt');
+const secret_key = 'sdfghgfdasdfghjhtrewqwertyuytrewqaxcvbhuytrewsxcvhytrewasxcvghytrewsxcvbhytrewsxcvghytrewazxcvgtrewazxcvghytrewasxcg'
 
 exports.userSignup = async(req,res) => {
     console.log("HI")
@@ -25,7 +26,9 @@ exports.userSignup = async(req,res) => {
             password:hashedPassword
         })
         await newUser.save();
+        const token = jwt.sign({"id":_id , "user_name":user_name}, secret_key , { expiresIn: '24h' })
         return res.status(201).json({
+            jwtToken:token,
             message:"User registered successfully.",
             success:true
         })
@@ -38,3 +41,38 @@ exports.userSignup = async(req,res) => {
    }
 
 }   
+
+
+exports.userSignin = async(req ,res) => {
+    const { email ,password } = req.body;
+    try{
+        const existUser =await User.findOne({email})
+        if(existUser.length === 0){
+            return res.status(404).json({message : "User not found" , success: false })
+        }
+        else{
+            const passwordMatch = await bcrypt.compare(password, existUser.password)
+          
+            if(passwordMatch && existUser.active){
+                const token = jwt.sign({"id":_id , "user_name":user_name},secret_key,{ expiresIn: '24h' })
+                return res.status(200).json({
+                    jwtToken:token,
+                    message:"User Login successfully.",
+                    success:true
+                })
+            }
+            else{
+                return res.status(404).json({
+                    message:"Invalid credentials",
+                    success:false
+                })
+            }
+        }
+    }
+    catch(err){
+        res.status(500).json({
+            message: 'Signin failed. Please try again.',
+            success:false
+        })
+    }
+}
