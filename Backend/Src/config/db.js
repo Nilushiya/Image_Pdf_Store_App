@@ -12,3 +12,5 @@ const connection = async() => {
         console.log('MongoDB connection error:', err);
     }
 }
+
+module.exports = connection;
