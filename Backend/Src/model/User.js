@@ -7,24 +7,20 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  user_address:{
-    type: String,
-    required: true
+  user_address: {
+    street: {
+      type: String,
+      required: true
+    },
+    no: {
+      type: String,
+      required: true
+    },
+    city: {
+      type: String,
+      required: true
+    }
   },
-//   user_address: {
-//     street: {
-//       type: String,
-//       required: true
-//     },
-//     no: {
-//       type: String,
-//       required: true
-//     },
-//     city: {
-//       type: String,
-//       required: true
-//     }
-//   },
   phone_no: {
     type: String,
     required: true
