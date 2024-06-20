@@ -2,7 +2,8 @@ const User = require('../model/User')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const secret_key = 'sdfghgfdasdfghjhtrewqwertyuytrewqaxcvbhuytrewsxcvhytrewasxcvghytrewsxcvbhytrewsxcvghytrewazxcvgtrewazxcvghytrewasxcg'
-
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 exports.userSignup = async (req, res) => {
     const { user_name, user_address, phone_no, email, password } = req.body;
@@ -82,3 +83,92 @@ exports.userSignin = async(req ,res) => {
         })
     }
 }
+
+exports.userRestPassword = async (req, res) => {
+    const { email } = req.body;
+    console.log('email', req.body);
+  
+    try {
+      const user = await User.findOne({ email });
+  
+      if (!user) {
+        return res.json({
+          success: false,
+          error: 'User not found'
+        });
+      }
+  
+      const token = crypto.randomBytes(32).toString('hex');
+      user.resetToken = token;
+      user.resetTokenExpiry = Date.now() + 3600000; // 1 hour
+      await user.save();
+      
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        port : 587 , 
+        logger: true,
+        debug : true,
+        secureConnection : false ,
+        auth: {
+          user: 'nilushiyak@gmail.com',
+          pass: 'zlpivdtemnrfcyyr'
+        },
+        tls : {
+            rejectUnauthorized : true
+            }
+      });
+      console.log("token : ",token)
+      const link = `http://localhost:4000/api/user/reset-password/${token}`
+      console.log("link : ",link)
+      const mailOptions = {
+        from: 'nilushiyak@gmail.com',
+        to: user.email,
+        subject: 'Password Reset',
+        text: `You requested for password reset. Click this link to reset your password: http://localhost:4000/api/user/reset-password/${token}`
+        // text:"Hii"
+      };
+      
+      console.log('mo :', mailOptions)
+      
+      transporter.sendMail(mailOptions, (error, info) => {
+        console.log('mo :', info)
+        if (error) {
+          return res.json({ 
+            success: false, 
+            error: 'Failed to send email',
+            details : error.message
+        });
+        }
+        res.json({ success: true, message: 'Password reset link sent to email' });
+      });
+    } catch (err) {
+      console.error('Error in password reset:', err);
+      res.status(500).json({ success: false, error: 'Server error' });
+    }
+  }
+  
+
+
+ exports.reset = async (req, res) => {
+    const { token, password } = req.body;
+    try {
+      const user = await User.findOne({
+        resetToken: token,
+        resetTokenExpiry: { $gt: Date.now() }
+      });
+      if (!user) {
+        return res.json({ success: false, error: 'Invalid or expired token' });
+      }
+  
+      user.password = password;
+      user.resetToken = undefined;
+      user.resetTokenExpiry = undefined;
+      await user.save();
+  
+      res.json({ success: true, message: 'Password reset successful' });
+    } catch (err) {
+      res.status(500).json({ success: false, error: 'Server error' });
+    }
+  };
+  
+//   vthenujan7400@gmail.com
