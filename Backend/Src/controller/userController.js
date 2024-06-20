@@ -100,7 +100,7 @@ exports.userRestPassword = async (req, res) => {
   
       const token = crypto.randomBytes(32).toString('hex');
       user.resetToken = token;
-      user.resetTokenExpiry = Date.now() + 3600000; // 1 hour
+      user.resetTokenExpiry = Date.now() +  300000; // 5 minutes
       await user.save();
       
       const transporter = nodemailer.createTransport({
@@ -125,13 +125,10 @@ exports.userRestPassword = async (req, res) => {
         to: user.email,
         subject: 'Password Reset',
         text: `You requested for password reset. Click this link to reset your password: http://localhost:4000/api/user/reset-password/${token}`
-        // text:"Hii"
       };
       
-      console.log('mo :', mailOptions)
       
       transporter.sendMail(mailOptions, (error, info) => {
-        console.log('mo :', info)
         if (error) {
           return res.json({ 
             success: false, 
