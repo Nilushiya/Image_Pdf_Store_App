@@ -6,15 +6,16 @@ const secret_key = 'sdfghgfdasdfghjhtrewqwertyuytrewqaxcvbhuytrewsxcvhytrewasxcv
 
 exports.userSignup = async (req, res) => {
     const { user_name, user_address, phone_no, email, password } = req.body;
-
+    // console.log("body",req.body)
     try {
         const exist_user = await User.findOne({ email });
         if (exist_user) {
-            return res.status(400).json({
-                message: 'Email already registered.',
+            return res.json({
+                error: 'Email already registered.',
                 success: false
             });
-        } else {
+        }
+        else {
             const hashedPassword = await bcrypt.hash(password, 10);
             const newUser = new User({
                 user_name,
@@ -26,8 +27,7 @@ exports.userSignup = async (req, res) => {
             await newUser.save();
 
             const token = jwt.sign({ id: newUser._id, user_name: newUser.user_name }, secret_key, { expiresIn: '24h' });
-            console.log("token : ", token);
-            return res.status(201).json({
+            return res.json({
                 jwtToken: token,
                 message: "User registered successfully.",
                 success: true
@@ -35,7 +35,7 @@ exports.userSignup = async (req, res) => {
         }
     } catch (err) {
         res.status(500).json({
-            message: 'Server error.',
+            error: err.message,
             success: false
         });
     }
@@ -46,14 +46,12 @@ exports.userSignup = async (req, res) => {
 
 
 exports.userSignin = async(req ,res) => {
-    console.log(req.body);
+    // console.log(req.body);
     const { email ,password } = req.body;
     try{
         const existUser =await User.findOne({email})
-        console.log("existUser",password)
         if(!existUser){
-            console.log("if")
-            return res.status(404).json({message : "User not found" , success: false })
+            return res.json({error : "User not found" , success: false })
             
         }
         else{
@@ -63,24 +61,23 @@ exports.userSignin = async(req ,res) => {
 
                 
                 const token = jwt.sign({"id":existUser._id , "user_name":existUser.user_name},secret_key,{ expiresIn: '24h' })
-                return res.status(200).json({
+                return res.json({
                     jwtToken:token,
                     message:"User Login successfully.",
                     success:true
                 })
             }
             else{
-                return res.status(404).json({
-                    message:"Invalid credentials",
+                return res.json({
+                    error:"Invalid credentials",
                     success:false
                 })
             }
         }
     }
     catch(err){
-        console.log("catch")
         res.status(500).json({
-            message: 'Signin failed. Please try again.',
+            error: 'Signin failed. Please try again.',
             success:false
         })
     }
