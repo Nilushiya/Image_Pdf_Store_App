@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  profile_image: {
+    type: String, 
+    required: false 
+  },
   registered_at: {
     type: Date,
     default: Date.now
