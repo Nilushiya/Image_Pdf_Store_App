@@ -42,6 +42,76 @@ exports.userSignup = async (req, res) => {
     }
 };
 
+exports.editUser = async (req, res) => {
+  console.log("Edits: ", req.body);
+  const edits = req.body;
+  const id = req.user && req.user.id;
+
+  if (!id || !edits) {
+      console.log("E");
+      return res.status(400).json({
+          message: "Error: Missing user ID or request body",
+          success: false
+      });
+  }
+
+  try {
+      console.log("Ee");
+      const user = await User.findByIdAndUpdate(id, { $set: edits }, { new: true, runValidators: true });
+      console.log("user: ", user);
+      if (!user) {
+          return res.status(404).json({
+              message: 'User not found',
+              success: false
+          });
+      }
+
+      return res.status(200).json({
+          message: 'User updated successfully',
+          success: true,
+          user
+      });
+  } catch (err) {
+      console.error("Error updating user details: ", err);
+      return res.status(500).json({
+          message: "Internal server error",
+          success: false
+      });
+  }
+};
+
+exports.getUser = async (req, res) => {
+  const id = req.user && req.user.id;
+
+  if (!id) {
+      return res.status(400).json({
+          message: "Error: Missing user ID.",
+          success: false
+      });
+  }
+
+  try {
+      const user_details = await User.findById({_id : id}); 
+      if (!user_details) {
+          return res.status(404).json({
+              message: "User not found",
+              success: false
+          });
+      }
+      console.log("details: ", user_details);
+      return res.status(200).json({
+          message: "User found",
+          success: true,
+          user: user_details
+      });
+  } catch (err) {
+      console.error("Error fetching user details: ", err);
+      return res.status(500).json({
+          message: "Internal server error",
+          success: false
+      });
+  }
+};
 
  
 
