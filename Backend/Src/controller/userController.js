@@ -50,8 +50,7 @@ exports.userSignin = async(req ,res) => {
     // console.log(req.body);
     const { email ,password } = req.body;
     try{
-      const lowercaseEmail = email.toLowerCase();
-        const existUser =await User.findOne({lowercaseEmail})
+        const existUser =await User.findOne({email:email})
         if(!existUser){
             return res.json({error : "User not found" , success: false })
             
@@ -87,23 +86,19 @@ exports.userSignin = async(req ,res) => {
 
 exports.userRestPassword = async (req, res) => {
     const { email } = req.body;
-    console.log('email', req.body);
-    const lowercaseEmail = email.toLowerCase();
+    // console.log('email', req.body);
   
     try {
-      const user = await User.findOne({ lowercaseEmail });
-  
+      const user = await User.findOne({ email:email });
+      // console.log("user : ",user);
       if (!user) {
         return res.json({
           success: false,
           error: 'User not found'
         });
       }
-  
-      const token = crypto.randomBytes(32).toString('hex');
-      user.resetToken = token;
-      user.resetTokenExpiry = Date.now() +  3600000; // 1 Hour
-      await user.save();
+
+      const token = jwt.sign({ id: user._id, email: user.email  }, secret_key, { expiresIn: '1h' });
       
       const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -128,9 +123,7 @@ exports.userRestPassword = async (req, res) => {
         subject: 'Password Reset',
         text: `You requested for password reset. Click this link to reset your password: http://localhost:3000/resetPassword/${token}`
       };
-
-      
-      
+    
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
           return res.json({ 
@@ -152,17 +145,17 @@ exports.userRestPassword = async (req, res) => {
  exports.reset = async (req, res) => {
     const { token, password } = req.body;
     try {
-      const user = await User.findOne({
-        resetToken: token,
-        resetTokenExpiry: { $gt: Date.now() }
-      });
+      const decoded = jwt.verify(token, secret_key);
+      const user = await User.findById(decoded.id);
+      // console.log("user : ",user);
       if (!user) {
         return res.json({ success: false, error: 'Invalid or expired token' });
       }
   
-      user.password = password;
-      user.resetToken = undefined;
-      user.resetTokenExpiry = undefined;
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+  
+      user.password = hashedPassword;
       await user.save();
   
       res.json({ success: true, message: 'Password reset successful' });
