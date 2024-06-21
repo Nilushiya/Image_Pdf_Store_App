@@ -50,7 +50,8 @@ exports.userSignin = async(req ,res) => {
     // console.log(req.body);
     const { email ,password } = req.body;
     try{
-        const existUser =await User.findOne({email})
+      const lowercaseEmail = email.toLowerCase();
+        const existUser =await User.findOne({lowercaseEmail})
         if(!existUser){
             return res.json({error : "User not found" , success: false })
             
@@ -87,9 +88,10 @@ exports.userSignin = async(req ,res) => {
 exports.userRestPassword = async (req, res) => {
     const { email } = req.body;
     console.log('email', req.body);
+    const lowercaseEmail = email.toLowerCase();
   
     try {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ lowercaseEmail });
   
       if (!user) {
         return res.json({
@@ -100,7 +102,7 @@ exports.userRestPassword = async (req, res) => {
   
       const token = crypto.randomBytes(32).toString('hex');
       user.resetToken = token;
-      user.resetTokenExpiry = Date.now() +  300000; // 5 minutes
+      user.resetTokenExpiry = Date.now() +  3600000; // 1 Hour
       await user.save();
       
       const transporter = nodemailer.createTransport({
@@ -118,14 +120,15 @@ exports.userRestPassword = async (req, res) => {
             }
       });
       console.log("token : ",token)
-      const link = `http://localhost:4000/api/user/reset-password/${token}`
+      const link = `http://localhost:3000/resetPassword/${token}`
       console.log("link : ",link)
       const mailOptions = {
         from: 'nilushiyak@gmail.com',
         to: user.email,
         subject: 'Password Reset',
-        text: `You requested for password reset. Click this link to reset your password: http://localhost:4000/api/user/reset-password/${token}`
+        text: `You requested for password reset. Click this link to reset your password: http://localhost:3000/resetPassword/${token}`
       };
+
       
       
       transporter.sendMail(mailOptions, (error, info) => {
