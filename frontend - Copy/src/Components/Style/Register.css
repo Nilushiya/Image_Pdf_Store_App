@@ -1,0 +1,76 @@
+.registration-form {
+   
+    max-width: 400px;
+    align-items: center;
+    margin: auto;
+    padding: 20px;
+    background-color: #0f0808;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    opacity: 80%;
+    /* margin-top: 5%; */
+  }
+  
+  .registration-form h2 {
+    text-align: center;
+    color: white;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+    height: 60px;
+  }
+   
+  
+  .registration-form  input[type="text"],
+  .registration-form input[type="email"],
+  .registration-form input[type="password"] {
+    height: 50px;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    background: transparent;
+    border-bottom: 2px solid rgb(250, 246, 246);
+    border-radius: 4px;
+    outline: none;
+    color: white;
+
+  }
+  
+  .error {
+    color: red;
+    font-weight: 600;
+    letter-spacing: 1px;
+    font-size: 16px;
+    margin-top: 5px;
+  }
+  
+  .btn {
+    background-color: #4CAF50 !important;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .btn:hover {
+    background-color: #45a049;
+     text-decoration: none;
+  }
+  .login-link{
+    color: white;
+   
+  }
+  .login-link a.login {
+    color: rgb(30, 159, 219); 
+    text-decoration: none; 
+  }
+  
+  .login-link a.login:hover {
+    text-decoration: underline; 
+  }
+  
