@@ -10,7 +10,7 @@ Server.use(cors());
 Server.use(express.json());
 Server.use(body_parser.json());
 Server.use('/api/user',userRouter);
-Server.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+Server.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 db();
 
