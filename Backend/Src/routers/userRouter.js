@@ -26,7 +26,7 @@ router.post('/request-password-reset',userController.userRestPassword)
 router.post('/reset-password',userController.reset)
 router.get('/getUser', verifyToken ,userController.getUser);
 router.put('/edituser', verifyToken ,userController.editUser);
-router.put('/deleteUser', verifyToken ,userController.deleteUser);
+router.delete('/deleteUser', verifyToken ,userController.deleteUser);
 
 
 module.exports = router;
