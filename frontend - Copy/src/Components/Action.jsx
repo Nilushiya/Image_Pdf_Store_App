@@ -218,7 +218,7 @@ const Action = () => {
             <>
               <input type="file" onChange={handleFileChange} style={{color:'red', width:"250px" , margin:'5% 12%' ,border:'none' , borderRadius:'10px'}}/>
               <div className="update">
-              <button className='iconnn' onClick={handleProfileImageUpdate}>Update</button>
+              <button className='iconnn' onClick={handleProfileImageUpdate}>Updat</button>
               <button className='iconnn' onClick={handleProfileImageRemove}>Remove</button>
               </div>
             </>
