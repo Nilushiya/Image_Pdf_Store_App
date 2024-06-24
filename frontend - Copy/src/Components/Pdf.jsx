@@ -1,9 +1,18 @@
 import React from 'react'
-import pdf from './Style/Pdf.css'
+// import pdf from './Style/Pdf.css'  
+import Navbar from './Navbar'
 
 const Pdf = () => {
   return (
-    <div>Pdf</div>
+    <>
+    <div className='container'>
+    <Navbar />
+    <div className='pdf'>
+     
+
+    </div>
+    </div>
+    </>
   )
 }
 

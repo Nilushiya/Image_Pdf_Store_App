@@ -8,7 +8,7 @@ import { checklogin } from '../Contaxt/UserContaxt';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formDatas, setFormData] = useState({
     email: '',
     password: ''
   });
@@ -18,17 +18,18 @@ const Login = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
-      ...formData,
+      ...formDatas,
       [name]: value
     });
   };
 
   const handleSubmit = async(e) => {
     e.preventDefault();
-    const validationErrors = validateForm(formData);
+    const validationErrors = validateForm(formDatas);
     if (Object.keys(validationErrors).length === 0) {
       try {
-        const response = await checklogin(formData);
+        console.log("data : ", formDatas);
+        const response = await checklogin(formDatas);
         if(response.data.success === true){
           toast.success("Login Success", {
             autoClose: 1000,
@@ -105,7 +106,7 @@ const Login = () => {
             type="text"
             id="email"
             name="email"
-            value={formData.email}
+            value={formDatas.email}
             onChange={handleChange}
             placeholder="Email"
           />
@@ -117,7 +118,7 @@ const Login = () => {
             type="password"
             id="password"
             name="password"
-            value={formData.password}
+            value={formDatas.password}
             onChange={handleChange}
             placeholder="Password"
           />

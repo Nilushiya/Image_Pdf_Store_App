@@ -126,8 +126,9 @@ export const checkRegister = async(formData) => {
   // Login
 export const checklogin = async(formData) => {
     try {
+      console.log("form : ", formData);
       const response = await axios.post(`${BASE_URL}/user/signin`, formData);
-      // console.log("response : ",response.data)
+      console.log("response : ",response.data)
       return response
     } 
     catch (error) {

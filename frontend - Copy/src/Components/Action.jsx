@@ -145,8 +145,8 @@ const Action = () => {
         </div>
         <h1 className="heading">Choose an Action</h1>
         <div className="button-container">
-          <Link className="animated-button" to='./image'>Image</Link>
-          <Link className="animated-button" to='./pdf'>PDF</Link>
+          <Link className="animated-button" to='/image'>Image</Link>
+          <Link className="animated-button" to='/pdf'>PDF</Link>
         </div>
       </div>
 
@@ -218,7 +218,7 @@ const Action = () => {
             <>
               <input type="file" onChange={handleFileChange} style={{color:'red', width:"250px" , margin:'5% 12%' ,border:'none' , borderRadius:'10px'}}/>
               <div className="update">
-              <button className='iconnn' onClick={handleProfileImageUpdate}>Updat</button>
+              <button className='iconnn' onClick={handleProfileImageUpdate}>Update</button>
               <button className='iconnn' onClick={handleProfileImageRemove}>Remove</button>
               </div>
             </>
@@ -226,7 +226,6 @@ const Action = () => {
             <>
               <input type="file" onChange={handleFileChange} style={{color:'red', width:"250px" , margin:'5% 12%' ,border:'none' , borderRadius:'10px'}}/>
               <button className='save' onClick={handleProfileImageUpdate} > <FontAwesomeIcon icon={faAdd} /></button>
-              {/* <button className='btn btnn' onClick={handleProfileImageRemove}>Remove</button> */}
             </>
           )}
           <Button variant="secondary" onClick={handleImgClose} className='modelFooter button'>
