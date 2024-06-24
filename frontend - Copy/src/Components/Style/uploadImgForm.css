@@ -1,0 +1,30 @@
+.uploadBody{
+    max-width: 400px;
+    min-height: 300px;
+    margin: auto;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-self: start;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    opacity: 80%;
+    border-radius: 10px;
+    color: white;
+}
+.uploadBody form{
+    display: flex;flex-direction: column;
+}
+.uploadBody .upload-form input{
+    max-width: 200px;
+    height: 50px;
+    padding: 10px;
+    font-size: 16px;
+    /* border: none; */
+    background: transparent;
+    border-bottom: 2px solid rgb(250, 246, 246);
+    border-radius: 4px;
+    /* outline: none; */
+    color: white;
+}
