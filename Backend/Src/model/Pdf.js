@@ -13,7 +13,8 @@ const PdfSchema = new mongoose.Schema({
     },
     folderName: {
         type: String,
-        required: true
+        required: true , 
+        lowercase : true
     },
     likeStatus: {
         type: String,
