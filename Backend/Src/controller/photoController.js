@@ -38,6 +38,7 @@ exports.uploadImage = async (req, res) => {
                 const photoUrl = `http://localhost:4000/${file.path}`;
                 const folderName = req.body.folderName;
                 const likeStatus = 'unlike';
+                const DeleteStatus = 'not in bin';
                 const uploadDate = new Date();
                 const imageSize = formatBytes(file.size);
 
@@ -46,6 +47,7 @@ exports.uploadImage = async (req, res) => {
                     photoUrl,
                     folderName,
                     likeStatus,
+                    DeleteStatus,
                     uploadDate,
                     imageSize
                 });
@@ -75,5 +77,80 @@ exports.uploadImage = async (req, res) => {
     } catch (error) {
         console.error("Error uploading photos:", error);
         res.status(500).json({ message: 'Error uploading photos', error });
+    }
+};
+
+
+
+exports.getImageDetails = async (req, res) => {
+    const id = req.user && req.user.id;
+    console.log("id:", id);
+
+    if (!id) {
+        return res.status(401).json({
+            message: "Error: Missing user ID.",
+            success: false
+        });
+    }
+
+    try { 
+        const isPhotoDetails = await Photo.find({ userId:new mongoose.Types.ObjectId(id) });
+
+        if (isPhotoDetails.length === 0 ) {
+            return res.json({
+                message: "This user has not uploaded any images. Please upload the images.",
+                success: false
+            });
+        }
+        
+        return res.json({
+            message: "Photo details retrieved successfully.",
+            success: true,
+            photos: isPhotoDetails 
+        });
+    } catch (error) {
+        console.error("Error getting photos and details:", error);
+        res.status(500).json({ message: 'Error getting photos and details', error });
+    }
+};
+
+
+
+exports.deleteImageDetails = async (req, res) => {
+    const imgID = req.params.imgID;
+    console.log("imgID:", imgID);
+
+    try {
+        // Validate if the imgID is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(imgID)) {
+            return res.status(400).json({
+                message: "Invalid image ID.",
+                success: false
+            });
+        }
+        if(await Photo.find({ _id : imgID})){
+            console.log(Photo.find({ _id : imgID}))
+        }
+
+
+        // Find and delete the photo by imgID
+const photo = await Photo.findOneAndDelete({_id : imgID});
+        console.log("photo:", photo);
+
+        if (!photo) {
+            return res.status(404).json({
+                message: "Image not found.",
+                success: false
+            });
+        }
+
+        return res.json({
+            message: "Image deleted successfully.",
+            success: true,
+            photo
+        });
+    } catch (error) {
+        console.error("Error deleting photos and details:", error);
+        res.status(500).json({ message: 'Error deleting photos and details', error });
     }
 };

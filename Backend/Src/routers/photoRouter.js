@@ -18,5 +18,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 router.post('/upload', upload.array('images', 10) ,verifyToken , PhotoController.uploadImage)
+router.get('/get' , verifyToken , PhotoController.getImageDetails)
+router.delete('/delete/:imgID' , PhotoController.deleteImageDetails)
 
 module.exports = router

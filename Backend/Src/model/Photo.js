@@ -19,6 +19,10 @@ const PhotoSchema = new mongoose.Schema({
         type: String,
         default: 'unlike'
     },
+    DeleteStatus: {
+        type: String,
+        default: 'not in bin'
+    },
     uploadDate: {
         type: Date,
         default: Date.now
