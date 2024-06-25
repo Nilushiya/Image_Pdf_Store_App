@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Photo = require('../model/Photo');
 
-// Function to convert bytes to human-readable format
+
 function formatBytes(bytes) {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -114,26 +114,152 @@ exports.getImageDetails = async (req, res) => {
     }
 };
 
+exports.getFolders = async (req, res) => {
+    const id = req.user && req.user.id;
+    console.log("id:", id);
 
+    if (!id) {
+        return res.status(401).json({
+            message: "Error: Missing user ID.",
+            success: false
+        });
+    }
 
-exports.deleteImageDetails = async (req, res) => {
+    try { 
+        const uniqueFolderNames = await Photo.aggregate([
+            { $match: { userId:new mongoose.Types.ObjectId(id) } }, 
+            { $group: { _id: "$folderName" } }, 
+            { $project: { _id: 0, folderName: "$_id" } } 
+        ]);
+
+        res.json({
+            message: "Unique folder names retrieved successfully.",
+            success: true,
+            uniqueFolderNames
+        });
+    } catch (error) {
+        console.error("Error getting photos and details:", error);
+        res.status(500).json({ message: 'Error getting photos and details', error });
+    }
+};
+
+exports.getByFolder = async (req, res) => {
+    const id = req.user && req.user.id;
+    console.log("id:", id);
+    const folderName = req.params.folderName;
+
+    if (!id) {
+        return res.status(401).json({
+            message: "Error: Missing user ID.",
+            success: false
+        });
+    }
+
+    try { 
+        const FolderByDetail = await Photo.find({ userId:new mongoose.Types.ObjectId(id), folderName });
+        if(!FolderByDetail){
+            return res.json({
+                message : "not Details"
+            })
+        }
+        console.log("FolderByDetail : ",FolderByDetail);
+        res.json({
+            message: "Folder details get successfully.",
+            success: true,
+            FolderByDetail
+        });
+    } catch (error) {
+        console.error("Error getting folder details:", error);
+        res.status(500).json({ message: 'Error getting folder details', error });
+    }
+};
+
+exports.changeDeleteStatus = async(req ,res ) => {
     const imgID = req.params.imgID;
     console.log("imgID:", imgID);
 
     try {
-        // Validate if the imgID is a valid ObjectId
         if (!mongoose.Types.ObjectId.isValid(imgID)) {
             return res.status(400).json({
                 message: "Invalid image ID.",
                 success: false
             });
         }
-        if(await Photo.find({ _id : imgID})){
-            console.log(Photo.find({ _id : imgID}))
+        const update = await Photo.findOneAndUpdate(
+            { _id: imgID },
+            { $set: { DeleteStatus: 'bin' } },
+            { new: true } 
+        );
+
+            if (!update) {
+                return res.status(404).json({
+                    message: "Image not found.",
+                    success: false
+                });
+            }
+    
+            return res.json({
+                message: "Status updated successfully.",
+                success: true,
+                update
+            });
+        
+    } catch (error) {
+        console.error("Error Updating Delete status:", error);
+        res.status(500).json({ message: 'Error Updating Delete status', error });
+    }
+
+}
+
+exports.changeLikeStatus = async(req ,res ) => {
+    const imgID = req.params.imgID;
+    console.log("imgID:", imgID);
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(imgID)) {
+            return res.status(400).json({
+                message: "Invalid image ID.",
+                success: false
+            });
+        }
+        const update = await Photo.findOneAndUpdate(
+            { _id: imgID },
+            { $set: { likeStatus: 'like' } },
+            { new: true } 
+        );
+
+            if (!update) {
+                return res.status(404).json({
+                    message: "Image not found.",
+                    success: false
+                });
+            }
+    
+            return res.json({
+                message: "Status updated successfully.",
+                success: true,
+                update
+            });
+        
+    } catch (error) {
+        console.error("Error Updating Like status:", error);
+        res.status(500).json({ message: 'Error Updating Like status', error });
+    }
+
+}
+
+exports.deleteImageDetails = async (req, res) => {
+    const imgID = req.params.imgID;
+    console.log("imgID:", imgID);
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(imgID)) {
+            return res.status(400).json({
+                message: "Invalid image ID.",
+                success: false
+            });
         }
 
-
-        // Find and delete the photo by imgID
 const photo = await Photo.findOneAndDelete({_id : imgID});
         console.log("photo:", photo);
 
