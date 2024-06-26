@@ -46,10 +46,10 @@ const UploadImgForm = () => {
     const validateForm = (files , folderName) => {
       let errors = {}
       if (files.length === 0) {
-        errors.files = 'Please select at least one file to upload.'
+        errors.files = 'file requied'
       }
       if (!folderName) {
-        errors.folderName = 'Please select at least one folderName or create folder.'
+        errors.folderName = 'folderName requried.'
       }
       return errors ; 
     }
@@ -88,7 +88,7 @@ const UploadImgForm = () => {
                     <p>{files.length}</p>
                 </div>
                 <form className="upload-form" onSubmit={handleSubmit}>
-                    <div>
+                <div className='folder'>
                         <select onChange={handleFolderChange} value={isNewFolder ? 'new' : folderName}>
                             <option value="" disabled>Select Folder</option>
                             {existingFolders.map((folder) => (
@@ -100,16 +100,17 @@ const UploadImgForm = () => {
                         </select>
                         {isNewFolder && (
                             <input
+                                className='folder_input'
                                 type="text"
                                 value={folderName}
                                 onChange={(e) => setFolderName(e.target.value)}
                                 placeholder="New Folder Name"
-                                required
+                                // required
                             />
                         )}
-                    {errors.folderName && <div className="error">{errors.folderName}</div>}
+                        {errors.folderName && <div className="error">{errors.folderName}</div>}
                     </div>
-                    <div>
+                    <div className='file'>
                     <input
                         type="file"
                         name='images'

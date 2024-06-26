@@ -19,6 +19,20 @@ export const fetchUniqeFolders = async() => {
      }
    }
 
+
+export const fetchimageDetails = async() => {
+    const token = localStorage.getItem('token');
+     try{
+       const response = await axios.get(`${BASE_URL}/get`, {
+         headers: { Authorization: `Bearer ${token}` }
+       });
+    //    console.log("res : ", response);
+       return response
+     }
+     catch (error) {
+       console.error("Error:", error);
+     }
+   }   
 export const uploadImages = async (files, folderName) => {
     const token = localStorage.getItem('token');
     console.log("files: ", files);

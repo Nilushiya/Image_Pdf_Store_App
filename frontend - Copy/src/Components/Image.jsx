@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdd, faCamera, faEdit, faEye, faRemove, faRightLeft, faRightLong, faSave, faUser } from '@fortawesome/free-solid-svg-icons';
 import BottomNav from './BottomNav';
 import UploadImgForm from './UploadImgForm';
+import AllPhotos from './AllPhotos';
 
 const Image = () => {
   const [view , setView] = useState('photos')
@@ -28,7 +29,7 @@ const Image = () => {
          <div className='displayContent' >
             {imageUpload ? 
               (<UploadImgForm />) :
-              (null)
+              (<AllPhotos  view = {view}/>)
             }
          </div>
       </div>

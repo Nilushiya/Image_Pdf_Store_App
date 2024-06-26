@@ -11,10 +11,11 @@
     width: 50px;
     height: 50px;
     background: black;
-    opacity: 80%;
+    /* opacity: 80%; */
     border-radius: 50px;
     margin:0 2%;
-    color: #4CAF50;
+    color: #9dc416;
+    /* color: #ff5f09; */
 }
 .bottomBut:hover{
     color: #1176e2;
