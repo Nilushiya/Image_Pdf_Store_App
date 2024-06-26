@@ -24,10 +24,17 @@
     border-radius: 8px;
   }
   .text-center{
-    /* background-color: red; */
-    /* width: 500px; */
   }
   .text-center img{
     width: 100px;
+  }
+  .text-center .folderBtn{
+    background: none;
+    border: none;
+  }
+  .text-center h1{
+    color:black;
+    width: 70px;
+    overflow: hidden;
   }
   

@@ -21,8 +21,11 @@ router.post('/upload', upload.array('images', 10) ,verifyToken , PhotoController
 router.get('/get' , verifyToken , PhotoController.getImageDetails)
 router.get('/getByFolder/:folderName' , verifyToken , PhotoController.getByFolder)
 router.get('/getFolders' , verifyToken , PhotoController.getFolders)
+router.get('/getLikes' , verifyToken , PhotoController.getLikes)
+router.get('/getDeleteStatus' , verifyToken , PhotoController.getDeleteStatus)
 router.put('/changeLikeStatus/:imgID' , PhotoController.changeLikeStatus)
 router.put('/updateDeleteStatus/:imgID' , PhotoController.changeDeleteStatus)
 router.delete('/delete/:imgID' , PhotoController.deleteImageDetails)
 
 module.exports = router
+

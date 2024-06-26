@@ -114,6 +114,62 @@ exports.getImageDetails = async (req, res) => {
     }
 };
 
+exports.getLikes = async (req, res) => {
+    const id = req.user && req.user.id;
+    console.log("id:", id);
+
+    if (!id) {
+        return res.status(401).json({
+            message: "Error: Missing user ID.",
+            success: false
+        });
+    }
+
+    try {
+        const likedPhotos = await Photo.find({
+            userId: new mongoose.Types.ObjectId(id),
+            likeStatus: 'like'
+        });
+
+        res.json({
+            message: "Liked photos retrieved successfully.",
+            success: true,
+            likedPhotos
+        });
+    } catch (error) {
+        console.error("Error getting liked photos:", error);
+        res.status(500).json({ message: 'Error getting liked photos', error });
+    }
+};
+
+exports.getDeleteStatus = async (req, res) => {
+    const id = req.user && req.user.id;
+    console.log("id:", id);
+
+    if (!id) {
+        return res.status(401).json({
+            message: "Error: Missing user ID.",
+            success: false
+        });
+    }
+
+    try {
+        const bindPhotos = await Photo.find({
+            userId: new mongoose.Types.ObjectId(id),        
+            DeleteStatus: 'bin'
+        });
+
+        res.json({
+            message: "bined photos retrieved successfully.",
+            success: true,
+            bindPhotos
+        });
+    } catch (error) {
+        console.error("Error getting bined photos:", error);
+        res.status(500).json({ message: 'Error getting bined photos', error });
+    }
+};
+
 exports.getFolders = async (req, res) => {
     const id = req.user && req.user.id;
     console.log("id:", id);

@@ -18,6 +18,34 @@ export const fetchUniqeFolders = async() => {
        console.error("Error:", error);
      }
    }
+  
+export const fetchLikeDetails = async() => {
+    const token = localStorage.getItem('token');
+     try{
+       const response = await axios.get(`${BASE_URL}/getLikes`, {
+         headers: { Authorization: `Bearer ${token}` }
+       });
+       console.log("res : ", response);
+       return response
+     }
+     catch (error) {
+       console.error("Error:", error);
+     }
+   }  
+
+export const fetchBinDetails = async() => {
+    const token = localStorage.getItem('token');
+     try{
+       const response = await axios.get(`${BASE_URL}/getDeleteStatus`, {
+         headers: { Authorization: `Bearer ${token}` }
+       });
+       console.log("res : ", response);
+       return response
+     }
+     catch (error) {
+       console.error("Error:", error);
+     }
+   }  
 
 
 export const fetchimageDetails = async() => {
