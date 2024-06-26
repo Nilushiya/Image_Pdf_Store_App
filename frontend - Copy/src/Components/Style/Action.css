@@ -4,11 +4,17 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
+    /* width: 100vw; */
+    /* background-color: pink; */
   }
 
 .top-bar {
-  position: absolute;
+  /* position: absolute;
+  top: 0; */
+  position: fixed;
   top: 0;
+  left: 0;
+  z-index: 1000;
   width: 100%;
   display: flex;
   justify-content: space-between;

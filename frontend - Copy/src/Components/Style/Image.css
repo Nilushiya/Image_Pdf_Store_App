@@ -1,5 +1,6 @@
 .contain {
     min-height: 100vh;
+    /* max-width: 90vw; */
   }
 .photo{
     min-height: 100vh;
@@ -7,6 +8,9 @@
     flex-direction: column;
 }
 .add-button{
+    position: fixed;
+    top: 0;
+    z-index: 1000;
     background: none;
     border: none;
     width: 50px;
@@ -15,8 +19,9 @@
     opacity: 80%;
     font-size: 30px;
     border-radius: 50px;
-    margin:0 2%;
-    color: #4CAF50;
+    margin:0 5%;
+    margin-top: 140px;
+    color: #9dc416;
 }
 .add-button:hover{
     color: #1176e2;
@@ -27,12 +32,12 @@
      /* align-items: end; */
 }
 .imgBody .imgAddIcon{
-    width: 100vw;
+    /* width: 100vw; */
     display: flex;
     justify-content: end;
     align-items: end;
    
-    margin-top: 95px;
+    /* margin-top: 95px; */
 }
 .imgfooter{
     display: flex;

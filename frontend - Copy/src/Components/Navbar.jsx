@@ -11,7 +11,7 @@ const Navbar = () => {
     }
 
   return (
-    <div className="top-bar">
+    <div className="top-bar" >
         <Link className="home-icon" to='/action' ><i className="fas fa-home fa-2x"></i></Link>
         <div className="logout-icon" onClick={handleLogout}>
             <i className="fas fa-sign-out-alt fa-2x" ></i>

@@ -18,7 +18,7 @@ const Image = () => {
     setImageupload(true)
   }
   return (
-    <>
+    < >
     <div className="contain">
     <Navbar />
     <div className='photo'>
@@ -30,6 +30,7 @@ const Image = () => {
             {imageUpload ? 
               (<UploadImgForm />) :
               (<AllPhotos  view = {view}/>)
+              // null
             }
          </div>
       </div>

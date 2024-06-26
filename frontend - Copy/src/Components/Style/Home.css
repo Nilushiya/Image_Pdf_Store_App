@@ -14,18 +14,20 @@ body, html {
   font-family: 'Roboto', sans-serif;
   /* overflow: hidden;  */
   background: linear-gradient(45deg, #0099ff, #33cc33);
+  /* width: 100vw; */
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
 .homepage {
+  /* width: 100vw; */
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  background: linear-gradient(45deg, #0099ff, #33cc33);
+  /* background: linear-gradient(45deg, #0099ff, #33cc33); */
   overflow: hidden;
 }
 
