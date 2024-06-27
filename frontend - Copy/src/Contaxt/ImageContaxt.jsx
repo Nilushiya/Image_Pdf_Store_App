@@ -32,6 +32,21 @@ export const fetchLikeDetails = async() => {
        console.error("Error:", error);
      }
    }  
+   
+export const fetchfolderNameDetails = async(folder) => {
+    const token = localStorage.getItem('token');
+     try{
+       const response = await axios.get(`${BASE_URL}/getByFolder/${folder}`, {
+         headers: { Authorization: `Bearer ${token}` }
+       });
+       console.log("res : ", response);
+       return response
+     }
+     catch (error) {
+       console.error("Error:", error);
+     }
+   }  
+
 
 export const fetchBinDetails = async() => {
     const token = localStorage.getItem('token');

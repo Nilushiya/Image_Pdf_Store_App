@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { fetchBinDetails, fetchLikeDetails, fetchUniqeFolders, fetchimageDetails } from '../Contaxt/ImageContaxt';
+import { fetchBinDetails, fetchLikeDetails, fetchUniqeFolders, fetchfolderNameDetails, fetchimageDetails } from '../Contaxt/ImageContaxt';
 import './Style/AllPhotos.css'; // Corrected the import path
-import folderImg from '../Components/Assets/folderImg.png';
+import folderImgg from '../Components/Assets/folderImg.png';
+import { AddAPhotoOutlined, FolderOutlined, FavoriteBorder, DeleteOutline , ArrowBackSharp } from '@mui/icons-material';
 const AllPhotos = ({ view }) => {
   const [currentView, setCurrentView] = useState(view);
   const [detailsPhotos, setPhotos] = useState([]);
   const [folderName , setFolderName] = useState([]);
   const [likedPhoto , setLikedPhoto] = useState([]);
   const [binedPhoto , setBinedPhoto] = useState([]);
+  const [folderNameImgg , setFolderNameImg] = useState([])
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [folderImg , setFolderImg] = useState(false)
 
   useEffect(() => {
     setCurrentView(view);
@@ -71,9 +74,19 @@ const fetchBin = async () => {
       console.error('Error fetching deleted photos details:', error);
   }
 };
-
-const openModal = (photo) => {
+const folderImgShow = async(folder) => {
   console.log("open");
+  setFolderImg(true)
+  try {
+    const response = await fetchfolderNameDetails(folder);
+    const folderNamePhotos = response.data.FolderByDetail;
+    // console.log("folder if dele",response)
+    setFolderNameImg(folderNamePhotos);
+} catch (error) {
+    console.error('Error fetching deleted photos details:', error);
+}
+}
+const openModal = (photo) => {
   console.log('photo : ' , photo);
   setSelectedPhoto(photo);
   setIsModalOpen(true);
@@ -83,6 +96,10 @@ const closeModal = () => {
   setSelectedPhoto(null);
   setIsModalOpen(false);
 };
+
+const onBack = () => {
+  setFolderImg(false)
+}
 
   return (
     <>
@@ -94,7 +111,7 @@ const closeModal = () => {
                 {detailsPhotos.length > 0 ? (
                   detailsPhotos.map(photo => (
                     <div key={photo._id} className="photo-item" onClick={() => openModal(photo)}>
-                      <img src={photo.photoUrl} alt='photo' className='img-fluid' onDoubleClick={() => openModal(photo)} />
+                      <img src={photo.photoUrl} alt='photo' className='img-fluid'/>
                      </div>
                   ))
                 ) : (
@@ -104,19 +121,39 @@ const closeModal = () => {
           </div>
         ) : (
           currentView === 'folder' ? (
-            <div className="row">
+            !folderImg ? (
+               <div >
               <h1>Folders</h1>
-              {folderName.length > 0 ? (
-                folderName.map(folder => (
-                  <div key={folder} className="col-lg-1 col-md-4 col-sm-6 mb-4 text-center">
-                    <button className='folderBtn'><img src={folderImg} alt='folder' className="img-fluid"/></button>
-                    <h1 className="h5 mt-2">{folder}</h1>
-                  </div>
-                ))
-              ) : (
-                <p>No folder available</p>
-              )}
+              <div className='allbox'>
+                {folderName.length > 0 ? (
+                  folderName.map(folder => (
+                    <div key={folder} className="text-center" >
+                      <button className='folderBtn' onClick={() => folderImgShow(folder)}><img src={folderImgg} alt='folder' className="img-fluid"/></button>
+                      <h4 >{folder}</h4>
+                    </div>
+                  ))
+                ) : (
+                  <p>No folder available</p>
+                )}
+                </div>
             </div>
+            )
+            :(
+              <div>
+              <h1>Folder Images</h1>
+              <button className='bottomBut' onClick={onBack}><ArrowBackSharp className="icon-large"/></button>
+              <div className="photos-container">
+              {folderNameImgg.length  > 0 ? (
+                folderNameImgg.map(image => (
+                  <div key={image._id} className="photo-item" onClick={() => openModal(image)}>
+                           <img src={image.photoUrl} alt='photo' className='img-fluid'/>
+                         </div>
+                ))
+              ) : (<p>No photos available</p>)} 
+                </div>
+            </div>
+            ) 
+           
           ) : (
             currentView === 'like' ? (
               <div>
@@ -124,8 +161,8 @@ const closeModal = () => {
                   <div className="photos-container">
                      {likedPhoto.length > 0 ? (
                        likedPhoto.map(liked => (
-                         <div key={liked._id} className="photo-item">
-                           <img src={liked.photoUrl} alt='photo' />
+                         <div key={liked._id} className="photo-item" onClick={() => openModal(liked)}>
+                           <img src={liked.photoUrl} alt='photo' className='img-fluid'/>
                          </div>
                        ))
                      ) : (
@@ -140,8 +177,8 @@ const closeModal = () => {
                     <div className="photos-container">
                        {binedPhoto.length > 0 ? (
                          binedPhoto.map(bined => (
-                           <div key={bined._id} className="photo-item">
-                             <img src={bined.photoUrl} alt='photo' />
+                           <div key={bined._id} className="photo-item" onClick={() => openModal(bined)}> 
+                             <img src={bined.photoUrl} alt='photo' className='img-fluid'/>
                            </div>
                          ))
                        ) : (
