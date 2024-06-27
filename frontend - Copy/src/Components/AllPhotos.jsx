@@ -8,7 +8,8 @@ const AllPhotos = ({ view }) => {
   const [folderName , setFolderName] = useState([]);
   const [likedPhoto , setLikedPhoto] = useState([]);
   const [binedPhoto , setBinedPhoto] = useState([]);
-
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setCurrentView(view);
@@ -71,6 +72,18 @@ const fetchBin = async () => {
   }
 };
 
+const openModal = (photo) => {
+  console.log("open");
+  console.log('photo : ' , photo);
+  setSelectedPhoto(photo);
+  setIsModalOpen(true);
+};
+
+const closeModal = () => {
+  setSelectedPhoto(null);
+  setIsModalOpen(false);
+};
+
   return (
     <>
       <div className="photoBody">
@@ -80,9 +93,9 @@ const fetchBin = async () => {
              <div className="photos-container">
                 {detailsPhotos.length > 0 ? (
                   detailsPhotos.map(photo => (
-                    <div key={photo._id} className="photo-item">
-                      <img src={photo.photoUrl} alt='photo' />
-                    </div>
+                    <div key={photo._id} className="photo-item" onClick={() => openModal(photo)}>
+                      <img src={photo.photoUrl} alt='photo' className='img-fluid' onDoubleClick={() => openModal(photo)} />
+                     </div>
                   ))
                 ) : (
                   <p>No photos available</p>
@@ -143,6 +156,14 @@ const fetchBin = async () => {
           )
         )}
       </div>
+      {isModalOpen && selectedPhoto && (
+        <div className="modal" onClick={closeModal} style={{color:"red"}}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <span className="close" onClick={closeModal}>&times;</span>
+            <img src={selectedPhoto.photoUrl} alt='photo' className="full-screen-photo" />
+          </div>
+        </div>
+      )}
     </>
   );
 };
