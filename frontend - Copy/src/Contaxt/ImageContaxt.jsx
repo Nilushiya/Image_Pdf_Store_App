@@ -25,7 +25,7 @@ export const fetchLikeDetails = async() => {
        const response = await axios.get(`${BASE_URL}/getLikes`, {
          headers: { Authorization: `Bearer ${token}` }
        });
-       console.log("res : ", response);
+      //  console.log("res : ", response);
        return response
      }
      catch (error) {
@@ -39,7 +39,19 @@ export const fetchfolderNameDetails = async(folder) => {
        const response = await axios.get(`${BASE_URL}/getByFolder/${folder}`, {
          headers: { Authorization: `Bearer ${token}` }
        });
-       console.log("res : ", response);
+      //  console.log("res : ", response);
+       return response
+     }
+     catch (error) {
+       console.error("Error:", error);
+     }
+   }  
+   
+export const changeLike = async(_id) => {
+    const token = localStorage.getItem('token');
+     try{
+       const response = await axios.put(`${BASE_URL}/changeLikeStatus/${_id}`);
+      //  console.log("rescccc : ", response);
        return response
      }
      catch (error) {
@@ -47,14 +59,24 @@ export const fetchfolderNameDetails = async(folder) => {
      }
    }  
 
-
+export const changBin = async(_id) => {
+    const token = localStorage.getItem('token');
+     try{
+       const response = await axios.put(`${BASE_URL}/updateDeleteStatus/${_id}`);
+       console.log("res : ", response);
+       return response
+     }
+     catch (error) {
+       console.error("Error:", error);
+     }
+   }  
 export const fetchBinDetails = async() => {
     const token = localStorage.getItem('token');
      try{
        const response = await axios.get(`${BASE_URL}/getDeleteStatus`, {
          headers: { Authorization: `Bearer ${token}` }
        });
-       console.log("res : ", response);
+      //  console.log("res : ", response);
        return response
      }
      catch (error) {

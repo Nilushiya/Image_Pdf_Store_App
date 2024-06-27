@@ -5,16 +5,48 @@
     top: 70px;
     padding: 10px;
   } 
+  .photoBody h1{
+    margin-top: 40px;
+  }
   .photos-container {
     margin-top: 20px;
     column-count: 4;
   } 
+  .photo-item {
+    position: relative;
+    display: inline-block;
+    margin-bottom: -5px;
+  }
   .photos-container img{
     width: 320px;
     height: auto;
     margin-bottom:20px ;
     object-fit: cover;
     box-shadow: 2px 2px 8px rgb(39, 38, 38);
+  }
+  .imgIcons {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    background-color: rgb(0, 0, 0) !important;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 10px;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+  }
+  
+  .icon-heart,
+  .icon-delete {
+    cursor: pointer;
+    border-radius: 50%;
+    font-size: 14px;
+    padding: 5px;
+  }
+  .bacicon{
+    background: none;
+    border: none;
+    color: white;
   }
   .allbox{
     display: flex;
@@ -38,12 +70,23 @@
     background: none;
     border: none;
   }
-  .text-center h1{
-    color:black;
-    width: 70px;
-    overflow: hidden;
-  }
-
+/* .imgBodyIcon{
+  display: flex;
+  flex-direction: row;
+} */
+ .folImg{
+  display: flex;
+  flex-direction: column;
+ } 
+.backicon{
+  background: none;
+  border: none;
+  /* background-color: red; */
+  align-self: start;
+  position: relative;
+  bottom: 90px;
+  margin-left: 1.5%;
+}
 
 
 .modal {

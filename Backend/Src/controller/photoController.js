@@ -94,7 +94,7 @@ exports.getImageDetails = async (req, res) => {
     }
 
     try { 
-        const isPhotoDetails = await Photo.find({ userId:new mongoose.Types.ObjectId(id) });
+        const isPhotoDetails = await Photo.find({ userId:new mongoose.Types.ObjectId(id) , DeleteStatus: 'not in bin'});
 
         if (isPhotoDetails.length === 0 ) {
             return res.json({

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { fetchBinDetails, fetchLikeDetails, fetchUniqeFolders, fetchfolderNameDetails, fetchimageDetails } from '../Contaxt/ImageContaxt';
+import { changBin, changeLike, fetchBinDetails, fetchLikeDetails, fetchUniqeFolders, fetchfolderNameDetails, fetchimageDetails } from '../Contaxt/ImageContaxt';
 import './Style/AllPhotos.css'; // Corrected the import path
 import folderImgg from '../Components/Assets/folderImg.png';
 import { AddAPhotoOutlined, FolderOutlined, FavoriteBorder, DeleteOutline , ArrowBackSharp } from '@mui/icons-material';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 const AllPhotos = ({ view }) => {
   const [currentView, setCurrentView] = useState(view);
   const [detailsPhotos, setPhotos] = useState([]);
@@ -101,6 +103,31 @@ const onBack = () => {
   setFolderImg(false)
 }
 
+const onLike = async(_id) => {
+  try {
+    const response = await changeLike(_id);
+    // const folderNamePhotos = response.data.FolderByDetail;
+    // console.log("folder if dele",response)
+    // setFolderNameImg(folderNamePhotos);
+    fetchPhotos();
+
+  } catch (error) {
+      console.error('Error fetching deleted photos details:', error);
+  }
+}
+
+const onBin = async(_id) => {
+  try {
+    const response = await changBin(_id);
+    // const folderNamePhotos = response.data.FolderByDetail;
+    // console.log("folder if dele",response)
+    // setFolderNameImg(folderNamePhotos);
+    fetchPhotos();
+  } catch (error) {
+      console.error('Error fetching deleted photos details:', error);
+  }
+}
+
   return (
     <>
       <div className="photoBody">
@@ -112,6 +139,10 @@ const onBack = () => {
                   detailsPhotos.map(photo => (
                     <div key={photo._id} className="photo-item" onClick={() => openModal(photo)}>
                       <img src={photo.photoUrl} alt='photo' className='img-fluid'/>
+                      <div className="imgIcons">
+                         <button className=' bacicon' onClick={() => onLike(photo._id)}><FavoriteBorder className="icon heart-icon" /></button>
+                         <button className=' bacicon' onClick={() => onBin(photo._id)}><DeleteOutline className="icon delete-icon" /></button>
+                    </div>
                      </div>
                   ))
                 ) : (
@@ -139,15 +170,19 @@ const onBack = () => {
             </div>
             )
             :(
-              <div>
+              <div className='folImg'>
               <h1>Folder Images</h1>
-              <button className='bottomBut' onClick={onBack}><ArrowBackSharp className="icon-large"/></button>
+              <button className=' backicon' onClick={onBack}><ArrowBackSharp className="icon-large"/>Back to folder</button>
               <div className="photos-container">
               {folderNameImgg.length  > 0 ? (
                 folderNameImgg.map(image => (
                   <div key={image._id} className="photo-item" onClick={() => openModal(image)}>
-                           <img src={image.photoUrl} alt='photo' className='img-fluid'/>
-                         </div>
+                    <img src={image.photoUrl} alt='photo' className='img-fluid'/>
+                    <div className="imgIcons">
+                      <FavoriteBorder className="icon heart-icon" />
+                      <DeleteOutline className="icon delete-icon" />
+                    </div>
+                  </div>
                 ))
               ) : (<p>No photos available</p>)} 
                 </div>
@@ -163,6 +198,9 @@ const onBack = () => {
                        likedPhoto.map(liked => (
                          <div key={liked._id} className="photo-item" onClick={() => openModal(liked)}>
                            <img src={liked.photoUrl} alt='photo' className='img-fluid'/>
+                           <div className="imgIcons">
+                              <DeleteOutline className="icon delete-icon" />
+                            </div>
                          </div>
                        ))
                      ) : (
@@ -179,6 +217,10 @@ const onBack = () => {
                          binedPhoto.map(bined => (
                            <div key={bined._id} className="photo-item" onClick={() => openModal(bined)}> 
                              <img src={bined.photoUrl} alt='photo' className='img-fluid'/>
+                             {/* <div className="imgIcons">
+                                <FavoriteBorder className="icon heart-icon" />
+                                <DeleteOutline className="icon delete-icon" />
+                              </div> */}
                            </div>
                          ))
                        ) : (
