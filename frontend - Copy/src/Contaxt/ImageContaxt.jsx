@@ -59,10 +59,34 @@ export const changeLike = async(_id) => {
      }
    }  
 
+export const changeUnLike = async(_id) => {
+    const token = localStorage.getItem('token');
+     try{
+       const response = await axios.put(`${BASE_URL}/changeUnLikeStatus/${_id}`);
+      //  console.log("rescccc : ", response);
+       return response
+     }
+     catch (error) {
+       console.error("Error:", error);
+     }
+   }  
+
 export const changBin = async(_id) => {
     const token = localStorage.getItem('token');
      try{
        const response = await axios.put(`${BASE_URL}/updateDeleteStatus/${_id}`);
+       console.log("res : ", response);
+       return response
+     }
+     catch (error) {
+       console.error("Error:", error);
+     }
+   }  
+
+export const changUnBin = async(_id) => {
+    const token = localStorage.getItem('token');
+     try{
+       const response = await axios.put(`${BASE_URL}/updateUnDeleteStatus/${_id}`);
        console.log("res : ", response);
        return response
      }
@@ -84,7 +108,17 @@ export const fetchBinDetails = async() => {
      }
    }  
 
-
+export const deleteById = async(_id) => {
+  const token = localStorage.getItem('token');
+   try{
+     const response = await axios.delete(`${BASE_URL}/delete/${_id}`);
+    //  console.log("res : ", response);
+     return response
+   }
+   catch (error) {
+     console.error("Error:", error);
+   }
+ } 
 export const fetchimageDetails = async() => {
     const token = localStorage.getItem('token');
      try{

@@ -5,6 +5,9 @@
     top: 70px;
     padding: 10px;
   } 
+  .photoBody p{
+    
+  }
   .photoBody h1{
     margin-top: 40px;
   }
@@ -14,7 +17,7 @@
   } 
   .photo-item {
     position: relative;
-    display: inline-block;
+    /* display: inline-block; */
     margin-bottom: -5px;
   }
   .photos-container img{
@@ -29,6 +32,7 @@
     bottom: 20px;
     width: 100%;
     background-color: rgb(0, 0, 0) !important;
+    opacity: 80%;
     display: flex;
     justify-content: space-between;
     padding: 5px 10px;

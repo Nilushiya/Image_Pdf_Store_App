@@ -24,7 +24,9 @@ router.get('/getFolders' , verifyToken , PhotoController.getFolders)
 router.get('/getLikes' , verifyToken , PhotoController.getLikes)
 router.get('/getDeleteStatus' , verifyToken , PhotoController.getDeleteStatus)
 router.put('/changeLikeStatus/:imgID' , PhotoController.changeLikeStatus)
+router.put('/changeUnLikeStatus/:imgID' , PhotoController.changeUnLikeStatus)
 router.put('/updateDeleteStatus/:imgID' , PhotoController.changeDeleteStatus)
+router.put('/updateUnDeleteStatus/:imgID' , PhotoController.changeUnDeleteStatus)
 router.delete('/delete/:imgID' , PhotoController.deleteImageDetails)
 
 module.exports = router

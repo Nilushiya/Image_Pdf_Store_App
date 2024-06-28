@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { changBin, changeLike, fetchBinDetails, fetchLikeDetails, fetchUniqeFolders, fetchfolderNameDetails, fetchimageDetails } from '../Contaxt/ImageContaxt';
+import { changBin, changUnBin, changeLike, changeUnLike, deleteById, fetchBinDetails, fetchLikeDetails, fetchUniqeFolders, fetchfolderNameDetails, fetchimageDetails } from '../Contaxt/ImageContaxt';
 import './Style/AllPhotos.css'; // Corrected the import path
 import folderImgg from '../Components/Assets/folderImg.png';
-import { AddAPhotoOutlined, FolderOutlined, FavoriteBorder, DeleteOutline , ArrowBackSharp } from '@mui/icons-material';
+import { AddAPhotoOutlined, FolderOutlined, FavoriteBorder, DeleteOutline , ArrowBackSharp , Favorite , Restore} from '@mui/icons-material';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 const AllPhotos = ({ view }) => {
@@ -14,7 +14,8 @@ const AllPhotos = ({ view }) => {
   const [folderNameImgg , setFolderNameImg] = useState([])
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [folderImg , setFolderImg] = useState(false)
+  const [folderImg , setFolderImg] = useState(false);
+  // const [ like , setLike] = useState(false);
 
   useEffect(() => {
     setCurrentView(view);
@@ -26,7 +27,7 @@ const AllPhotos = ({ view }) => {
       fetchFolder();
     }
     if (view === 'like'){
-      console.log("folder if")
+      // console.log("folder if")
       fetchLike();
     }
     if (view === 'delete'){
@@ -103,45 +104,92 @@ const onBack = () => {
   setFolderImg(false)
 }
 
-const onLike = async(_id) => {
+const onLike = async(_id , e , folder) => {
+  e.stopPropagation();
+  // setLike(true);
   try {
     const response = await changeLike(_id);
-    // const folderNamePhotos = response.data.FolderByDetail;
-    // console.log("folder if dele",response)
-    // setFolderNameImg(folderNamePhotos);
     fetchPhotos();
+    if(folder != 'null'){
+  console.log("folder :",folder)
+  folderImgShow(folder)
+    }
+  } catch (error) {
+      console.error('Error fetching deleted photos details:', error);
+  }
+}
+
+const onUnLike = async(_id , e , folder ) => {
+  e.stopPropagation();
+  
+  // setLike(true);
+  try {
+    const response = await changeUnLike(_id);
+    fetchPhotos();
+    fetchLike();
+    if(folder != 'null'){
+  console.log("folder :",folder)
+  folderImgShow(folder)
+    }
 
   } catch (error) {
       console.error('Error fetching deleted photos details:', error);
   }
 }
 
-const onBin = async(_id) => {
+const onBin = async(_id , e , folder) => {
+  e.stopPropagation();
   try {
     const response = await changBin(_id);
-    // const folderNamePhotos = response.data.FolderByDetail;
-    // console.log("folder if dele",response)
-    // setFolderNameImg(folderNamePhotos);
     fetchPhotos();
+    if(folder != 'null'){
+      console.log("folder :",folder)
+      folderImgShow(folder)
+        }
   } catch (error) {
       console.error('Error fetching deleted photos details:', error);
   }
 }
 
+const onUnDelete = async(_id , e) => {
+  e.stopPropagation();
+  try {
+    const response = await changUnBin(_id);
+    fetchBin();
+  } catch (error) {
+      console.error('Error fetching deleted photos details:', error);
+  }
+}
+
+const onPermanateDelete = async(_id , e) => {
+  e.stopPropagation();
+  try {
+    const response = await deleteById(_id);
+    fetchBin();
+  } catch (error) {
+      console.error('Error fetching deleted photos details:', error);
+  }
+}
+// console.log("like :", like)
   return (
     <>
       <div className="photoBody">
-        {currentView === 'photos' ? (
+        { currentView === 'photos' ? (
          <div>
           <h1>Pictures</h1>
              <div className="photos-container">
-                {detailsPhotos.length > 0 ? (
+                {detailsPhotos && detailsPhotos.length > 0 ? (
                   detailsPhotos.map(photo => (
                     <div key={photo._id} className="photo-item" onClick={() => openModal(photo)}>
                       <img src={photo.photoUrl} alt='photo' className='img-fluid'/>
                       <div className="imgIcons">
-                         <button className=' bacicon' onClick={() => onLike(photo._id)}><FavoriteBorder className="icon heart-icon" /></button>
-                         <button className=' bacicon' onClick={() => onBin(photo._id)}><DeleteOutline className="icon delete-icon" /></button>
+                         
+                         {photo.likeStatus === 'unlike' ? ( 
+                          <button className=' bacicon' onClick={(e) => onLike(photo._id , e , null)}><FavoriteBorder className="icon heart-icon" /></button>
+                         ) : (  
+                          <button className=' bacicon' onClick={(e) => onUnLike(photo._id , e , null)}><Favorite className="icon heart-icon" /></button>
+                          )}
+                         <button className=' bacicon' onClick={(e) => onBin(photo._id ,e , null)}><DeleteOutline className="icon delete-icon" /></button>
                     </div>
                      </div>
                   ))
@@ -179,8 +227,14 @@ const onBin = async(_id) => {
                   <div key={image._id} className="photo-item" onClick={() => openModal(image)}>
                     <img src={image.photoUrl} alt='photo' className='img-fluid'/>
                     <div className="imgIcons">
-                      <FavoriteBorder className="icon heart-icon" />
-                      <DeleteOutline className="icon delete-icon" />
+                    {image.likeStatus === 'unlike' ? ( 
+                          <button className=' bacicon' onClick={(e) => onLike(image._id , e , image.folderName)}><FavoriteBorder className="icon heart-icon" /></button>
+                         ) : (  
+                          <button className=' bacicon' onClick={(e) => onUnLike(image._id , e , image.folderName)}><Favorite className="icon heart-icon" /></button>
+                    )}
+                    {/* <button className=' bacicon' onClick={(e) => onUnLike(image._id , e , image.folderName)}><Favorite className="icon heart-icon" /></button> */}
+                    {/* <button className=' bacicon' onClick={(e) => onLike(image._id , e , image.folderName)}><FavoriteBorder className="icon heart-icon" /></button> */}
+                    <button className=' bacicon' onClick={(e) => onBin(image._id ,e  , image.folderName)}><DeleteOutline className="icon delete-icon" /></button>
                     </div>
                   </div>
                 ))
@@ -199,7 +253,8 @@ const onBin = async(_id) => {
                          <div key={liked._id} className="photo-item" onClick={() => openModal(liked)}>
                            <img src={liked.photoUrl} alt='photo' className='img-fluid'/>
                            <div className="imgIcons">
-                              <DeleteOutline className="icon delete-icon" />
+                              <button className=' bacicon' onClick={(e) => onUnLike(liked._id , e , null )}><Favorite className="icon heart-icon" /></button>
+                              <button className=' bacicon' onClick={(e) => onBin(liked._id ,e , null)}><DeleteOutline className="icon delete-icon" /></button>
                             </div>
                          </div>
                        ))
@@ -217,10 +272,12 @@ const onBin = async(_id) => {
                          binedPhoto.map(bined => (
                            <div key={bined._id} className="photo-item" onClick={() => openModal(bined)}> 
                              <img src={bined.photoUrl} alt='photo' className='img-fluid'/>
-                             {/* <div className="imgIcons">
-                                <FavoriteBorder className="icon heart-icon" />
-                                <DeleteOutline className="icon delete-icon" />
-                              </div> */}
+                             <div className="imgIcons">
+                                <button className=' bacicon' onClick={(e) => onUnDelete(bined._id , e)}><Restore className="icon heart-icon" /></button>
+                                <button className=' bacicon' onClick={(e) => onPermanateDelete(bined._id , e)}><DeleteOutline className="icon heart-icon" /></button>
+                                {/* <Restore className="icon heart-icon" />
+                                <DeleteOutline className="icon delete-icon" /> */}
+                              </div>
                            </div>
                          ))
                        ) : (

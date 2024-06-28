@@ -128,7 +128,8 @@ exports.getLikes = async (req, res) => {
     try {
         const likedPhotos = await Photo.find({
             userId: new mongoose.Types.ObjectId(id),
-            likeStatus: 'like'
+            likeStatus: 'like' ,
+            DeleteStatus : 'not in bin'
         });
 
         res.json({
@@ -212,7 +213,7 @@ exports.getByFolder = async (req, res) => {
     }
 
     try { 
-        const FolderByDetail = await Photo.find({ userId:new mongoose.Types.ObjectId(id), folderName });
+        const FolderByDetail = await Photo.find({ userId:new mongoose.Types.ObjectId(id), folderName , DeleteStatus : 'not in bin' });
         if(!FolderByDetail){
             return res.json({
                 message : "not Details"
@@ -244,6 +245,43 @@ exports.changeDeleteStatus = async(req ,res ) => {
         const update = await Photo.findOneAndUpdate(
             { _id: imgID },
             { $set: { DeleteStatus: 'bin' } },
+            { new: true } 
+        );
+
+            if (!update) {
+                return res.status(404).json({
+                    message: "Image not found.",
+                    success: false
+                });
+            }
+    
+            return res.json({
+                message: "Status updated successfully.",
+                success: true,
+                update
+            });
+        
+    } catch (error) {
+        console.error("Error Updating Delete status:", error);
+        res.status(500).json({ message: 'Error Updating Delete status', error });
+    }
+
+}
+
+exports.changeUnDeleteStatus = async(req ,res ) => {
+    const imgID = req.params.imgID;
+    console.log("imgID:", imgID);
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(imgID)) {
+            return res.status(400).json({
+                message: "Invalid image ID.",
+                success: false
+            });
+        }
+        const update = await Photo.findOneAndUpdate(
+            { _id: imgID },
+            { $set: { DeleteStatus: 'not in bin' } },
             { new: true } 
         );
 
@@ -303,7 +341,42 @@ exports.changeLikeStatus = async(req ,res ) => {
     }
 
 }
+exports.changeUnLikeStatus = async(req ,res ) => {
+    const imgID = req.params.imgID;
+    console.log("imgID:", imgID);
 
+    try {
+        if (!mongoose.Types.ObjectId.isValid(imgID)) {
+            return res.status(400).json({
+                message: "Invalid image ID.",
+                success: false
+            });
+        }
+        const update = await Photo.findOneAndUpdate(
+            { _id: imgID },
+            { $set: { likeStatus: 'unlike' } },
+            { new: true } 
+        );
+
+            if (!update) {
+                return res.status(404).json({
+                    message: "Image not found.",
+                    success: false
+                });
+            }
+    
+            return res.json({
+                message: "Status updated successfully.",
+                success: true,
+                update
+            });
+        
+    } catch (error) {
+        console.error("Error Updating Like status:", error);
+        res.status(500).json({ message: 'Error Updating Like status', error });
+    }
+
+}
 exports.deleteImageDetails = async (req, res) => {
     const imgID = req.params.imgID;
     console.log("imgID:", imgID);
