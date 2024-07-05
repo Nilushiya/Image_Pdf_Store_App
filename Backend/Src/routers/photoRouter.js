@@ -27,6 +27,7 @@ router.put('/changeLikeStatus/:imgID' , PhotoController.changeLikeStatus)
 router.put('/changeUnLikeStatus/:imgID' , PhotoController.changeUnLikeStatus)
 router.put('/updateDeleteStatus/:imgID' , PhotoController.changeDeleteStatus)
 router.put('/updateUnDeleteStatus/:imgID' , PhotoController.changeUnDeleteStatus)
+router.put('/selectedDeleteStatus' , PhotoController.changeselectedDeleteStatus)
 router.delete('/delete/:imgID' , PhotoController.deleteImageDetails)
 
 module.exports = router

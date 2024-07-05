@@ -268,6 +268,24 @@ exports.changeDeleteStatus = async(req ,res ) => {
 
 }
 
+exports.changeselectedDeleteStatus = async(req ,res ) => {
+    const { ids } = req.body;
+
+  if (!Array.isArray(ids)) {
+    return res.status(400).json({ error: 'ids must be an array' });
+  }
+
+  try {
+    await Photo.updateMany(
+      { _id: { $in: ids } },
+      { $set: { deleteStatus: 'bin' } }
+    );
+    res.status(200).json({ message: 'Delete status updated successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while updating delete status' });
+  }
+
+}
 exports.changeUnDeleteStatus = async(req ,res ) => {
     const imgID = req.params.imgID;
     console.log("imgID:", imgID);

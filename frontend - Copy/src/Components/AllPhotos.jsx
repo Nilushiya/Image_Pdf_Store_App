@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { changBin, changUnBin, changeLike, changeUnLike, deleteById, fetchBinDetails, fetchLikeDetails, fetchUniqeFolders, fetchfolderNameDetails, fetchimageDetails } from '../Contaxt/ImageContaxt';
+import { changBin, changSelectBin, changUnBin, changeLike, changeUnLike, deleteById, fetchBinDetails, fetchLikeDetails, fetchUniqeFolders, fetchfolderNameDetails, fetchimageDetails } from '../Contaxt/ImageContaxt';
 import './Style/AllPhotos.css'; // Corrected the import path
 import folderImgg from '../Components/Assets/folderImg.png';
 import { AddAPhotoOutlined, FolderOutlined, FavoriteBorder, DeleteOutline , ArrowBackSharp , Favorite , Restore , RadioButtonUnchecked , TaskAlt } from '@mui/icons-material';
@@ -16,8 +16,9 @@ const AllPhotos = ({ view }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [folderImg , setFolderImg] = useState(false);
   const [isSelect , setIsSelect] = useState(false);
-  const [isSelected , setIsSelected] = useState(false)
+  // const [isSelected , setIsSelected] = useState(false)
   const [selectItems , SetSelectItems] = useState([]);
+  const [photoState, setPhotoState] = useState({});
 
 
   useEffect(() => {
@@ -37,6 +38,14 @@ const AllPhotos = ({ view }) => {
       fetchBin();
     }
   }, [view]);
+
+  useEffect(() => {
+    const initialState = {};
+    detailsPhotos.forEach(photo => {
+      initialState[photo._id] = false;
+    });
+    setPhotoState(initialState);
+  }, [detailsPhotos]);
 
   const fetchPhotos = async () => {
     try {
@@ -174,18 +183,42 @@ const onPermanateDelete = async(_id , e) => {
   }
 }
 
+const  select_Delete = async() => {
+  try {
+    const response = await changSelectBin(selectItems);
+    console.log("res : " , response)
+    }
+  catch (error) {
+      console.error('Error update Selected photos details:', error);
+  }
+}
 const onSelectAll = (e) => {
   e.stopPropagation();
-  setIsSelected(true)
+  const initialState = {};
+  detailsPhotos.forEach(photo => {
+    initialState[photo._id] = true;
+  });
+  setPhotoState(initialState);
   const selectedIds = detailsPhotos.map(img => img._id);
   SetSelectItems(selectedIds);
 }
 const onUnSelectAll =(e) => {
   e.stopPropagation();
-  setIsSelected(false)
+  const initialState = {};
+  detailsPhotos.forEach(photo => {
+    initialState[photo._id] = false;
+  });
+  setPhotoState(initialState);
   SetSelectItems([])
 }
-console.log("isSelect :", selectItems)
+const onSelecttoBin =(e , _id) => {
+  e.stopPropagation();
+  // setIsSelected(true)
+
+}
+const allSelected = Object.values(photoState).every(value => value);
+
+console.log("isSelect :", selectItems.length)
   return (
     <>
       <div className="photoBody">
@@ -196,12 +229,15 @@ console.log("isSelect :", selectItems)
               <button onClick={() => setIsSelect(true)} className='select'>Select</button>  : 
               <div className='selectDelete'>
                 <div className='deleteAll'>
-                {isSelect && (!isSelected ? <button className=' bacicon ' onClick={(e) => onSelectAll(e)}><RadioButtonUnchecked /></button> : <button className=' bacicon' onClick={(e) => onUnSelectAll(e)}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>) }
+                {isSelect && 
+                (!allSelected 
+                ? <button className=' bacicon ' onClick={(e) => onSelectAll(e)}><RadioButtonUnchecked /></button> 
+                : <button className=' bacicon' onClick={(e) => onUnSelectAll(e)}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>) }
                   <h6>All</h6>
                 </div>
-                  <h4 >{selectItems.length >= 0 ?  'Select items' : 
+                  <h4 >{selectItems.length <= 0 ?  'Select items' : 
                   <div className='deleteAll'>
-                  <button className=' bacicon' ><DeleteOutline  /></button>
+                  <button className=' bacicon' onClick={select_Delete}><DeleteOutline  /></button>
                   <h6>{selectItems.length} selected</h6>
                 </div> 
                     }</h4> 
@@ -212,8 +248,11 @@ console.log("isSelect :", selectItems)
                   detailsPhotos.map(photo => (
                     <div key={photo._id} className="photo-item" onClick={() => openModal(photo)}>
                       <div className='radioIcon'> 
-                        {isSelect && (!isSelected ? <button className=' bacicon ' ><RadioButtonUnchecked /></button> : <button className=' bacicon' ><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>) }
-                         {/* TaskAlt */}
+                        {isSelect && 
+                        (!photoState[photo._id] 
+                        ? <button className=' bacicon ' onClick={(e) => onSelecttoBin(e , photo._id)}><RadioButtonUnchecked /></button> 
+                        : <button className=' bacicon' ><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>)
+                         }
                       </div>
                       <img src={photo.photoUrl} alt='photo' className='img-fluid'/>
                       <div className="imgIcons">

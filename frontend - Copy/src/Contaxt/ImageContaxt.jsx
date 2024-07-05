@@ -70,7 +70,18 @@ export const changeUnLike = async(_id) => {
        console.error("Error:", error);
      }
    }  
-
+   
+   export const changSelectBin = async(ids) => {
+      console.log("ids:" ,ids)
+     try{
+       const response = await axios.put(`${BASE_URL}/selectedDeleteStatus` , ids);
+       console.log("res : ", response);
+       return response
+     }
+     catch (error) {
+       console.error("Error:", error);
+     }
+   }  
 export const changBin = async(_id) => {
     const token = localStorage.getItem('token');
      try{
