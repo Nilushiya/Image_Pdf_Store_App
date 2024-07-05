@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { changBin, changUnBin, changeLike, changeUnLike, deleteById, fetchBinDetails, fetchLikeDetails, fetchUniqeFolders, fetchfolderNameDetails, fetchimageDetails } from '../Contaxt/ImageContaxt';
 import './Style/AllPhotos.css'; // Corrected the import path
 import folderImgg from '../Components/Assets/folderImg.png';
-import { AddAPhotoOutlined, FolderOutlined, FavoriteBorder, DeleteOutline , ArrowBackSharp , Favorite , Restore} from '@mui/icons-material';
+import { AddAPhotoOutlined, FolderOutlined, FavoriteBorder, DeleteOutline , ArrowBackSharp , Favorite , Restore , RadioButtonUnchecked , TaskAlt } from '@mui/icons-material';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 const AllPhotos = ({ view }) => {
@@ -15,7 +15,10 @@ const AllPhotos = ({ view }) => {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [folderImg , setFolderImg] = useState(false);
-  // const [ like , setLike] = useState(false);
+  const [isSelect , setIsSelect] = useState(false);
+  const [isSelected , setIsSelected] = useState(false)
+  const [selectItems , SetSelectItems] = useState([]);
+
 
   useEffect(() => {
     setCurrentView(view);
@@ -170,24 +173,55 @@ const onPermanateDelete = async(_id , e) => {
       console.error('Error fetching deleted photos details:', error);
   }
 }
-// console.log("like :", like)
+
+const onSelectAll = (e) => {
+  e.stopPropagation();
+  setIsSelected(true)
+  const selectedIds = detailsPhotos.map(img => img._id);
+  SetSelectItems(selectedIds);
+}
+const onUnSelectAll =(e) => {
+  e.stopPropagation();
+  setIsSelected(false)
+  SetSelectItems([])
+}
+console.log("isSelect :", selectItems)
   return (
     <>
       <div className="photoBody">
         { currentView === 'photos' ? (
          <div>
           <h1>Pictures</h1>
+            {!isSelect ? 
+              <button onClick={() => setIsSelect(true)} className='select'>Select</button>  : 
+              <div className='selectDelete'>
+                <div className='deleteAll'>
+                {isSelect && (!isSelected ? <button className=' bacicon ' onClick={(e) => onSelectAll(e)}><RadioButtonUnchecked /></button> : <button className=' bacicon' onClick={(e) => onUnSelectAll(e)}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>) }
+                  <h6>All</h6>
+                </div>
+                  <h4 >{selectItems.length >= 0 ?  'Select items' : 
+                  <div className='deleteAll'>
+                  <button className=' bacicon' ><DeleteOutline  /></button>
+                  <h6>{selectItems.length} selected</h6>
+                </div> 
+                    }</h4> 
+              </div>
+            }
              <div className="photos-container">
                 {detailsPhotos && detailsPhotos.length > 0 ? (
                   detailsPhotos.map(photo => (
                     <div key={photo._id} className="photo-item" onClick={() => openModal(photo)}>
+                      <div className='radioIcon'> 
+                        {isSelect && (!isSelected ? <button className=' bacicon ' ><RadioButtonUnchecked /></button> : <button className=' bacicon' ><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>) }
+                         {/* TaskAlt */}
+                      </div>
                       <img src={photo.photoUrl} alt='photo' className='img-fluid'/>
                       <div className="imgIcons">
                          
                          {photo.likeStatus === 'unlike' ? ( 
                           <button className=' bacicon' onClick={(e) => onLike(photo._id , e , null)}><FavoriteBorder className="icon heart-icon" /></button>
                          ) : (  
-                          <button className=' bacicon' onClick={(e) => onUnLike(photo._id , e , null)}><Favorite className="icon heart-icon" /></button>
+                          <button className=' bacicon' onClick={(e) => onUnLike(photo._id , e , null)}><Favorite className="icon heart-icon" style={{color:"rgb(212, 48, 7)"}}/></button>
                           )}
                          <button className=' bacicon' onClick={(e) => onBin(photo._id ,e , null)}><DeleteOutline className="icon delete-icon" /></button>
                     </div>
@@ -253,7 +287,7 @@ const onPermanateDelete = async(_id , e) => {
                          <div key={liked._id} className="photo-item" onClick={() => openModal(liked)}>
                            <img src={liked.photoUrl} alt='photo' className='img-fluid'/>
                            <div className="imgIcons">
-                              <button className=' bacicon' onClick={(e) => onUnLike(liked._id , e , null )}><Favorite className="icon heart-icon" /></button>
+                              <button className=' bacicon' onClick={(e) => onUnLike(liked._id , e , null )}><Favorite className="icon heart-icon" style={{color:"rgb(212, 48, 7)"}}/></button>
                               <button className=' bacicon' onClick={(e) => onBin(liked._id ,e , null)}><DeleteOutline className="icon delete-icon" /></button>
                             </div>
                          </div>
