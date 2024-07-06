@@ -211,14 +211,26 @@ const onUnSelectAll =(e) => {
   setPhotoState(initialState);
   SetSelectItems([])
 }
-const onSelecttoBin =(e , _id) => {
+const onSelecttoBin =(e , id) => {
   e.stopPropagation();
+  setPhotoState(prevState => ({
+    ...prevState,
+    [id]: !prevState[id]
+}));
   // setIsSelected(true)
-
 }
+ 
+const onUnSelectBin = (e , id ) => {
+  e.stopPropagation();
+  setPhotoState(prevState => ({
+    ...prevState,
+    [id]: false
+}));
+}
+
 const allSelected = Object.values(photoState).every(value => value);
 
-console.log("isSelect :", selectItems.length)
+console.log("isSelect :", photoState)
   return (
     <>
       <div className="photoBody">
@@ -251,7 +263,7 @@ console.log("isSelect :", selectItems.length)
                         {isSelect && 
                         (!photoState[photo._id] 
                         ? <button className=' bacicon ' onClick={(e) => onSelecttoBin(e , photo._id)}><RadioButtonUnchecked /></button> 
-                        : <button className=' bacicon' ><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>)
+                        : <button className=' bacicon' onClick={(e) => onUnSelectBin(e , photo._id)}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>)
                          }
                       </div>
                       <img src={photo.photoUrl} alt='photo' className='img-fluid'/>

@@ -101,6 +101,7 @@
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
+  height: 60px;
  }
  .select{
    display: flex;
