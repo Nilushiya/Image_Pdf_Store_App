@@ -14,7 +14,8 @@
     text-align: center;
   }
   .photoBody h1{
-    margin-top: 40px;
+    margin-top: 10px;
+    margin-bottom: 80px;
     min-width: 90vw;
   }
 
@@ -23,6 +24,12 @@
     column-count: 4;
   } 
   .photo-item {
+    position: relative;
+    display: inline-block;  
+    margin-bottom: -5px;
+    /* margin-top: -70px; */
+  }
+  .photo-items{
     position: relative;
     display: inline-block;  
     margin-bottom: -5px;
@@ -95,13 +102,17 @@
  } 
 
  .selectDelete{
+  width: 100vw;
   justify-self: start;
   align-self: start;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  height: 60px;
+  /* height: 60px; */
+  position: absolute;
+  top: 60px;
+  /* background-color: red; */
  }
  .select{
    display: flex;
@@ -115,7 +126,7 @@
    color: white;
    border-radius: 10px;
    position: absolute;
-   top: 70px;
+   top: 60px;
  }
  .deleteAll{
   display: flex;

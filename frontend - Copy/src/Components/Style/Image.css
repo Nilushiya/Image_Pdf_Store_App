@@ -17,10 +17,9 @@
     height: 50px;
     background: black;
     opacity: 80%;
-    font-size: 30px;
     border-radius: 50px;
     margin:0 5%;
-    margin-top: 140px;
+    margin-top: 120px;
     color: #9dc416;
 }
 .add-button:hover{

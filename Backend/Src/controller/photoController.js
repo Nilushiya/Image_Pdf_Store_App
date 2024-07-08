@@ -268,24 +268,43 @@ exports.changeDeleteStatus = async(req ,res ) => {
 
 }
 
-exports.changeselectedDeleteStatus = async(req ,res ) => {
-    const { ids } = req.body;
+exports.changeselectedDeleteStatus = async (req, res) => {
+    const ids = req.body;
+    
+    console.log("Received IDs: ", ids);
+    if (!Array.isArray(ids)) {
+      return res.status(400).json({ error: 'IDs must be an array' });
+    }
+  
+    const validIds = ids.filter(id => mongoose.Types.ObjectId.isValid(id));
+    if (validIds.length !== ids.length) {
+      return res.status(400).json({ error: 'One or more IDs are invalid' });
+    }
+  
+    console.log("Valid IDs: ", validIds);
+  
+    try {
 
-  if (!Array.isArray(ids)) {
-    return res.status(400).json({ error: 'ids must be an array' });
-  }
+        const existingDocs = await Photo.find({ _id: { $in: validIds } });
+        console.log("Existing documents: ", existingDocs);
 
-  try {
-    await Photo.updateMany(
-      { _id: { $in: ids } },
-      { $set: { deleteStatus: 'bin' } }
-    );
-    res.status(200).json({ message: 'Delete status updated successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'An error occurred while updating delete status' });
-  }
-
-}
+        const result = await Photo.updateMany(
+            { _id: { $in: validIds } },
+            { $set: { DeleteStatus: 'bin' } },
+            { writeConcern: { w: 'majority', j: true } }
+          );
+      
+          console.log("Update result: ", result);
+          if (result.acknowledged) {
+            res.status(200).json({ message: 'Delete status updated successfully' });
+          } else {
+            res.status(500).json({ error: 'Update operation was not acknowledged' });
+          }
+    } catch (error) {
+      console.error("Error during update: ", error);
+      res.status(500).json({ error: 'An error occurred while updating delete status' });
+    }
+  };
 exports.changeUnDeleteStatus = async(req ,res ) => {
     const imgID = req.params.imgID;
     console.log("imgID:", imgID);

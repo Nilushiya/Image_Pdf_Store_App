@@ -3,6 +3,7 @@ import image from './Style/Image.css'
 import Navbar from './Navbar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdd, faCamera, faEdit, faEye, faRemove, faRightLeft, faRightLong, faSave, faUser } from '@fortawesome/free-solid-svg-icons';
+import { AddPhotoAlternate} from '@mui/icons-material';
 import BottomNav from './BottomNav';
 import UploadImgForm from './UploadImgForm';
 import AllPhotos from './AllPhotos';
@@ -24,7 +25,7 @@ const Image = () => {
     <div className='photo'>
       <div className='imgBody'>
          <div className='imgAddIcon'>
-            <button className="add-button" onClick={handleAddButtonClick}><FontAwesomeIcon icon={faAdd} /></button>
+            <button className="add-button" onClick={handleAddButtonClick}><AddPhotoAlternate className="icon-large"/></button>
          </div>
          <div className='displayContent' >
             {imageUpload ? 
