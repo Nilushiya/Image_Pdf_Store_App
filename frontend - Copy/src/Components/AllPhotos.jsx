@@ -248,46 +248,87 @@ const onUnSelectAll =(e , item) => {
     folderNameImgg.forEach(photo => {
       initialState[photo._id] = false;
     });
-    setPhotoState(initialState);
+    setFolderState(initialState);
     setSelectItems([])}
 
 }
-const onSelecttoBin =(e , id) => {
+const onSelecttoBin =(e , id , item) => {
   e.stopPropagation();
-  setPhotoState(prevState => {
-    const newState ={...prevState,
-    [id]: !prevState[id] }
-
-    const selectedIds = Object.keys(newState).filter(id => newState[id]);
-    setSelectItems(selectedIds);
-
-    return newState;
-});
+  if(item === "photo"){
+    setPhotoState(prevState => {
+      const newState ={...prevState,
+      [id]: !prevState[id] }
+  
+      const selectedIds = Object.keys(newState).filter(id => newState[id]);
+      setSelectItems(selectedIds);
+  
+      return newState;
+  });
+  }
+  if(item === "folder"){
+    setFolderState(prevState => {
+      const newState ={...prevState,
+      [id]: !prevState[id] }
+  
+      const selectedIds = Object.keys(newState).filter(id => newState[id]);
+      setSelectItems(selectedIds);
+  
+      return newState;
+  });
+  }
+  
 
   // setIsSelected(true)
 }
  
-const onUnSelectBin = (e , id ) => {
+const onUnSelectBin = (e , id , item) => {
   e.stopPropagation();
-  setPhotoState(prevState => {
-   const newState ={ ...prevState,
-    [id]: false};
-    const selectedIds = Object.keys(newState).filter(id => newState[id]);
-    setSelectItems(selectedIds);
-
-    return newState;
-});
+  if(item === "photo"){
+    setPhotoState(prevState => {
+      const newState ={ ...prevState,
+       [id]: false};
+       const selectedIds = Object.keys(newState).filter(id => newState[id]);
+       setSelectItems(selectedIds);
+   
+       return newState;
+   });
+  }
+  if(item === "folder"){
+    setFolderState(prevState => {
+      const newState ={ ...prevState,
+       [id]: false};
+       const selectedIds = Object.keys(newState).filter(id => newState[id]);
+       setSelectItems(selectedIds);
+   
+       return newState;
+   });
+  }
+  
 }
 
-const photo_back = (e) => {
+const photo_back = (e , item) => {
+  if(item === "photo"){
+  const updatedPhotoState = Object.keys(photoState).reduce((acc, id) => {
+    acc[id] = false; 
+    return acc;
+  }, {});
+  
+  setPhotoState(updatedPhotoState);}
+
+  if(item === "folder"){
+    const updatedPhotoState = Object.keys(folderState).reduce((acc, id) => {
+      acc[id] = false; 
+      return acc;
+    }, {});
+    
+  setFolderState(updatedPhotoState);}
   setSelectItems([])
   setIsSelect(false)
-  // detailsPhotos.length = 0
 }
 const allSelected = Object.values(photoState).every(value => value);
 const allFolderSelected = Object.values(folderState).every(value => value);
 
-// console.log("isSelect :", selectItems)
+console.log("isSelect :", selectItems)
   return (
     <>
       <div className="photoBody">
@@ -305,7 +346,7 @@ const allFolderSelected = Object.values(folderState).every(value => value);
                   ? <button className=' bacicon ' onClick={(e) => onSelectAll(e , "photo")}><RadioButtonUnchecked /></button> 
                   : <button className=' bacicon' onClick={(e) => onUnSelectAll(e, "photo")}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>) 
                   }
-                  <button className=' bacicon ' style={{color:"black"}} onClick={(e) => photo_back(e)}><KeyboardBackspace />All</button>
+                  <button className=' bacicon ' style={{color:"black"}} onClick={(e) => photo_back(e , "photo")}><KeyboardBackspace />All</button>
                   {/* <h6><KeyboardBackspace />All</h6> */}
                 </div>
                 <h3 >{selectItems.length <= 0 ?  'Select items' : 
@@ -324,8 +365,8 @@ const allFolderSelected = Object.values(folderState).every(value => value);
                       <div className='radioIcon'> 
                         {isSelect && 
                           (!photoState[photo._id] 
-                          ? <button className=' bacicon ' onClick={(e) => onSelecttoBin(e , photo._id)}><RadioButtonUnchecked /></button> 
-                          : <button className=' bacicon' onClick={(e) => onUnSelectBin(e , photo._id)}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>)
+                          ? <button className=' bacicon ' onClick={(e) => onSelecttoBin(e , photo._id , "photo")}><RadioButtonUnchecked /></button> 
+                          : <button className=' bacicon' onClick={(e) => onUnSelectBin(e , photo._id , "photo")}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>)
                          }
                       </div>
                       <img src={photo.photoUrl} alt='photo' className='img-fluid'/>
@@ -377,7 +418,7 @@ const allFolderSelected = Object.values(folderState).every(value => value);
                   ? <button className=' bacicon ' onClick={(e) => onSelectAll(e , "folder")}><RadioButtonUnchecked /></button> 
                   : <button className=' bacicon' onClick={(e) => onUnSelectAll(e, "folder")}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>) 
                   }
-                  <button className=' bacicon ' style={{color:"black"}} onClick={(e) => photo_back(e)}><KeyboardBackspace />All</button>
+                  <button className=' bacicon ' style={{color:"black"}} onClick={(e) => photo_back(e , "folder")}><KeyboardBackspace />All</button>
                 </div>
                 <h3 >{selectItems.length <= 0 ?  'Select items' : 
                   <div className='deleteAll'>
@@ -397,8 +438,8 @@ const allFolderSelected = Object.values(folderState).every(value => value);
                           {/* 00 */}
                         {isSelect && 
                           (!folderState[image._id] 
-                          ? <button className=' bacicon ' onClick={(e) => onSelecttoBin(e , image._id)}><RadioButtonUnchecked /></button> 
-                          : <button className=' bacicon' onClick={(e) => onUnSelectBin(e , image._id)}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>)
+                          ? <button className=' bacicon ' onClick={(e) => onSelecttoBin(e , image._id , "folder")}><RadioButtonUnchecked /></button> 
+                          : <button className=' bacicon' onClick={(e) => onUnSelectBin(e , image._id , "folder")}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>)
                          }
                         </div>
                         {/* 00 */}
