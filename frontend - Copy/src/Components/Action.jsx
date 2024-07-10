@@ -146,7 +146,7 @@ const Action = () => {
         <h1 className="heading">Choose an Action</h1>
         <div className="button-container">
           <Link className="animated-button" to='/image'>Image</Link>
-          <Link className="animated-button" to='/pdf'>PDF</Link>
+          {/* <Link className="animated-button" to='/pdf'>PDF</Link> */}
         </div>
       </div>
 

@@ -4,7 +4,7 @@ const LoadingAnimation = () => {
   return (
     <div className="loading-animation">
           <div className="spinner"></div>
-          <p>Loading photos...</p>
+          {/* <p>Loading photos...</p> */}
     </div>
   )
 }

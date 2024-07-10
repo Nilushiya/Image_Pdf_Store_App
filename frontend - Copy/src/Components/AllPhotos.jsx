@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { changBin, changSelectBin, changUnBin, changeLike, changeUnLike, deleteById, fetchBinDetails, fetchLikeDetails, fetchUniqeFolders, fetchfolderNameDetails, fetchimageDetails } from '../Contaxt/ImageContaxt';
 import './Style/AllPhotos.css'; // Corrected the import path
 import folderImgg from '../Components/Assets/folderImg.png';
-import { AddAPhotoOutlined, FolderOutlined, FavoriteBorder, DeleteOutline , ArrowBackSharp , Favorite , Restore , RadioButtonUnchecked , TaskAlt , ArrowCircleDown} from '@mui/icons-material';
+import { AddAPhotoOutlined, FolderOutlined, FavoriteBorder, DeleteOutline , ArrowBackSharp , Favorite , Restore , RadioButtonUnchecked , TaskAlt , ArrowCircleDown , KeyboardBackspace} from '@mui/icons-material';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import LoadingAnimation from './LoadingAnimation';
@@ -19,6 +19,7 @@ const AllPhotos = ({ view }) => {
   const [isSelect , setIsSelect] = useState(false);
   const [selectItems , setSelectItems] = useState([]);
   const [photoState, setPhotoState] = useState({});
+  const [folderState, setFolderState] = useState({});
   const [loading, setLoading] = useState(true);
 
 
@@ -42,12 +43,26 @@ const AllPhotos = ({ view }) => {
 
   useEffect(() => {
     const initialState = {};
-    detailsPhotos.forEach(photo => {
-      initialState[photo._id] = false;
-    });
-    setPhotoState(initialState);
+    if(detailsPhotos){
+      detailsPhotos.forEach(photo => {
+        initialState[photo._id] = false;
+      });
+      setPhotoState(initialState);
+    }
+  
   }, [detailsPhotos]);
-
+  console.log("photoState : ", photoState)
+  useEffect(() => {
+    const initialState = {};
+    if(folderNameImgg){
+      folderNameImgg.forEach(photo => {
+        initialState[photo._id] = false;
+      });
+      setFolderState(initialState);
+    }
+  
+  }, [folderNameImgg]);
+console.log("folderState : ", folderState)
   const fetchPhotos = async () => {
     try {
       const response = await fetchimageDetails();
@@ -197,24 +212,45 @@ const  select_Delete = async() => {
   setIsSelect(false)
   fetchPhotos();
 }
-const onSelectAll = async(e) => {
+const onSelectAll = async(e , item) => {
   e.stopPropagation();
   const initialState = {};
-  detailsPhotos.forEach(photo => {
-    initialState[photo._id] = true;
-  });
-  await setPhotoState(initialState);
-  const selectedIds = Object.keys(initialState).filter(id => initialState[id]);
-  setSelectItems(selectedIds);
+  if(item === "photo"){
+    detailsPhotos.forEach(photo => {
+      initialState[photo._id] = true;
+    });
+    await setPhotoState(initialState);
+    const selectedIds = Object.keys(initialState).filter(id => initialState[id]);
+    setSelectItems(selectedIds);
+  }
+  if(item === "folder"){
+    console.log("okay ")
+    folderNameImgg.forEach(photo => {
+      initialState[photo._id] = true;
+    });
+    await setFolderState(initialState);
+    const selectedIds = Object.keys(initialState).filter(id => initialState[id]);
+    setSelectItems(selectedIds);
+  }
+  
 }
-const onUnSelectAll =(e) => {
+const onUnSelectAll =(e , item) => {
   e.stopPropagation();
   const initialState = {};
+  if(item === "photo"){
   detailsPhotos.forEach(photo => {
     initialState[photo._id] = false;
   });
   setPhotoState(initialState);
-  setSelectItems([])
+  setSelectItems([])}
+
+  if(item === "folder"){
+    folderNameImgg.forEach(photo => {
+      initialState[photo._id] = false;
+    });
+    setPhotoState(initialState);
+    setSelectItems([])}
+
 }
 const onSelecttoBin =(e , id) => {
   e.stopPropagation();
@@ -243,9 +279,15 @@ const onUnSelectBin = (e , id ) => {
 });
 }
 
+const photo_back = (e) => {
+  setSelectItems([])
+  setIsSelect(false)
+  // detailsPhotos.length = 0
+}
 const allSelected = Object.values(photoState).every(value => value);
+const allFolderSelected = Object.values(folderState).every(value => value);
 
-console.log("isSelect :", selectItems)
+// console.log("isSelect :", selectItems)
   return (
     <>
       <div className="photoBody">
@@ -254,24 +296,26 @@ console.log("isSelect :", selectItems)
         ? (
           <div>
             <h1>Pictures</h1>
-            {!isSelect ? 
+            {detailsPhotos ? ( !isSelect ? 
               <button onClick={() => setIsSelect(true)} className='select'>Select <ArrowCircleDown /></button>  : 
               <div className='selectDelete'>
                 <div className='deleteAll'>
                   {isSelect && 
                   (!allSelected 
-                  ? <button className=' bacicon ' onClick={(e) => onSelectAll(e)}><RadioButtonUnchecked /></button> 
-                  : <button className=' bacicon' onClick={(e) => onUnSelectAll(e)}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>) 
+                  ? <button className=' bacicon ' onClick={(e) => onSelectAll(e , "photo")}><RadioButtonUnchecked /></button> 
+                  : <button className=' bacicon' onClick={(e) => onUnSelectAll(e, "photo")}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>) 
                   }
-                  <h6>All</h6>
+                  <button className=' bacicon ' style={{color:"black"}} onClick={(e) => photo_back(e)}><KeyboardBackspace />All</button>
+                  {/* <h6><KeyboardBackspace />All</h6> */}
                 </div>
                 <h3 >{selectItems.length <= 0 ?  'Select items' : 
                   <div className='deleteAll'>
                     <button className=' bacicon' style={{color:"red"}}  onClick={select_Delete}><DeleteOutline  className="icon-large"/></button>
-                    <h6>{selectItems.length} selected</h6>
+                    <h6>{isSelect ? selectItems.length : null} selected</h6>
                   </div> }
                 </h3> 
               </div>
+            ):(null)
             }
              <div className="photos-container">
                 {detailsPhotos && detailsPhotos.length > 0 ? (
@@ -304,12 +348,12 @@ console.log("isSelect :", selectItems)
           currentView === 'folder' ? (
             !folderImg ? (
               <div >
-                <h1>Folders</h1>
-                <div className='allbox'>
+                <h1 >Folders</h1>
+                <div className='allbox' style={{position:"relative" , bottom:"60px"}}>
                   {folderName.length > 0 ? (
                     folderName.map(folder => (
                       <div key={folder} className="text-center" >
-                        <button className='folderBtn' onClick={() => folderImgShow(folder)}><img src={folderImgg} alt='folder' className="img-fluid"/></button>
+                        <button className='folderBtn' onClick={() => folderImgShow(folder)}><img src={folderImgg} alt='folder' /></button>
                         <h4 >{folder}</h4>
                       </div>
                     ))
@@ -322,11 +366,42 @@ console.log("isSelect :", selectItems)
             :(
               <div className='folImg'>
                 <h1>Folder Images</h1>
-                <button className=' backicon' onClick={onBack}><ArrowBackSharp className="icon-large"/>Back to folder</button>
+                <button className=' backicon' onClick={onBack}><ArrowBackSharp />Back to folder</button>
+                {/* 00 */}
+                {folderNameImgg ? ( !isSelect ? 
+              <button onClick={() => setIsSelect(true)} className='selects'>Select <ArrowCircleDown /></button>  : 
+              <div className='selectDeletes'>
+                <div className='deleteAll'>
+                  {isSelect && 
+                  (!allFolderSelected 
+                  ? <button className=' bacicon ' onClick={(e) => onSelectAll(e , "folder")}><RadioButtonUnchecked /></button> 
+                  : <button className=' bacicon' onClick={(e) => onUnSelectAll(e, "folder")}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>) 
+                  }
+                  <button className=' bacicon ' style={{color:"black"}} onClick={(e) => photo_back(e)}><KeyboardBackspace />All</button>
+                </div>
+                <h3 >{selectItems.length <= 0 ?  'Select items' : 
+                  <div className='deleteAll'>
+                    <button className=' bacicon' style={{color:"red"}}  onClick={select_Delete}><DeleteOutline  className="icon-large"/></button>
+                    <h6>{selectItems.length} selected</h6>
+                  </div> }
+                </h3> 
+              </div>
+            ):(null)
+            }
+            {/* 00 */}
                 <div className="photos-container">
-                  {folderNameImgg.length  > 0 ? (
+                  {folderNameImgg && folderNameImgg.length  > 0 ? (
                     folderNameImgg.map(image => (
                       <div key={image._id} className="photo-items" onClick={() => openModal(image)}>
+                        <div className='radioIcon'> 
+                          {/* 00 */}
+                        {isSelect && 
+                          (!folderState[image._id] 
+                          ? <button className=' bacicon ' onClick={(e) => onSelecttoBin(e , image._id)}><RadioButtonUnchecked /></button> 
+                          : <button className=' bacicon' onClick={(e) => onUnSelectBin(e , image._id)}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>)
+                         }
+                        </div>
+                        {/* 00 */}
                         <img src={image.photoUrl} alt='photo' className='img-fluid'/>
                         <div className="imgIcons">
                           {image.likeStatus === 'unlike' ? ( 

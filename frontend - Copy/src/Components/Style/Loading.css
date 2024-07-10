@@ -1,10 +1,10 @@
 /* styles.css */
 .loading-animation {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Full screen height */
-    flex-direction: column;
+  max-width:  100vw;
+  max-height: 100vh; 
+  background-color: red;
+  margin: 200px;
+ 
   }
   
   .spinner {
