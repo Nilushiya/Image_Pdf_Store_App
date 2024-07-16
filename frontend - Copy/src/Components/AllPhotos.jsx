@@ -8,23 +8,29 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 import LoadingAnimation from './LoadingAnimation';
 const AllPhotos = ({ view }) => {
   const [currentView, setCurrentView] = useState(view);
-  const [detailsPhotos, setPhotos] = useState([]);
   const [folderName , setFolderName] = useState([]);
+
+  const [detailsPhotos, setPhotos] = useState([]);
   const [likedPhoto , setLikedPhoto] = useState([]);
   const [binedPhoto , setBinedPhoto] = useState([]);
   const [folderNameImgg , setFolderNameImg] = useState([])
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
+
+  const [selectedPhoto, setSelectedPhoto] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [folderImg , setFolderImg] = useState(false);
+
   const [isSelect , setIsSelect] = useState(false);
   const [isLikeSelect , setIsLikeSelect] = useState(false);
   const [isFolderSelect , setIsFolderSelect] = useState(false);
+
   const [selectItems , setSelectItems] = useState([]);
   const [selectfolderItems , setSelectfolderItems] = useState([]);
   const [selectLikeItems , setLikeSelectItems] = useState([]);
+
   const [photoState, setPhotoState] = useState({});
   const [favouriteState , setfavouriteState] = useState({});
   const [folderState, setFolderState] = useState({});
+
   const [loading, setLoading] = useState(true);
 
 
@@ -60,6 +66,7 @@ const AllPhotos = ({ view }) => {
   
   }, [detailsPhotos]);
   console.log("photoState : ", photoState)
+
   useEffect(() => {
     const initialState = {};
     if(folderNameImgg){
@@ -71,6 +78,19 @@ const AllPhotos = ({ view }) => {
   
   }, [folderNameImgg]);
 console.log("folderState : ", folderState)
+
+useEffect(() => {
+  const initialState = {};
+  if(likedPhoto){
+    likedPhoto.forEach(photo => {
+      initialState[photo._id] = false;
+    });
+    setfavouriteState(initialState);
+  }
+
+}, [folderNameImgg]);
+console.log("folderState : ", folderState)
+
   const fetchPhotos = async () => {
     try {
       const response = await fetchimageDetails();
@@ -115,6 +135,7 @@ const fetchBin = async () => {
       console.error('Error fetching deleted photos details:', error);
   }
 };
+
 const folderImgShow = async(folder) => {
   console.log("open");
   setFolderImg(true)
@@ -127,6 +148,7 @@ const folderImgShow = async(folder) => {
     console.error('Error fetching deleted photos details:', error);
 }
 }
+
 const openModal = (photo) => {
   console.log('photo : ' , photo);
   setSelectedPhoto(photo);
@@ -218,12 +240,12 @@ const   select_Delete = async(items) => {
     fetchPhotos();
     }
     if(items === "favourite"){
-      const response = await changSelectBin(selectItems);
+      const response = await changSelectBin(selectLikeItems);
       console.log("res : " , response)
       setIsLikeSelect(false)
       }
     if(items === "folder"){
-        const response = await changSelectBin(selectItems);
+        const response = await changSelectBin(selectfolderItems);
         console.log("res : " , response)
         setIsFolderSelect(false)
         }  
@@ -292,7 +314,7 @@ const onSelecttoBin =(e , id , item) => {
   if(item === "photo"){
     setPhotoState(prevState => {
       const newState ={...prevState,
-      [id]: !prevState[id] }
+      [id]: !prevState[id] } 
   
       const selectedIds = Object.keys(newState).filter(id => newState[id]);
       setSelectItems(selectedIds);
@@ -401,6 +423,7 @@ const photo_back = (e , item) => {
   
 }
 const allSelected = Object.values(photoState).every(value => value);
+console.log("allSelected :", allSelected  )
 const allFolderSelected = Object.values(folderState).every(value => value);
 const allFavouriteSelected = Object.values(favouriteState).every(value => value);
 
@@ -429,7 +452,8 @@ console.log("isSelect :", selectItems)
                 <h3 >{selectItems.length <= 0 ?  'Select items' : 
                   <div className='deleteAll'>
                     <button className=' bacicon' style={{color:"red"}}  onClick={() => select_Delete("photo")}><DeleteOutline  className="icon-large"/></button>
-                    <h6>{isSelect ? selectItems.length : null} selected</h6>
+                    <h6>{selectItems.length} selected</h6>
+                    {/* <h6>{isSelect ? selectItems.length : null} selected</h6> */}
                   </div> }
                 </h3> 
               </div>
