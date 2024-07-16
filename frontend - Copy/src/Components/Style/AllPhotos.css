@@ -107,7 +107,7 @@
  } 
 
  .selectDelete{
-  width: 100vw;
+  width: 90%;
   justify-self: start;
   align-self: start;
   display: flex;

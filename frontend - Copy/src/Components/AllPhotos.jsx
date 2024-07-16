@@ -19,6 +19,7 @@ const AllPhotos = ({ view }) => {
   const [isSelect , setIsSelect] = useState(false);
   const [selectItems , setSelectItems] = useState([]);
   const [photoState, setPhotoState] = useState({});
+  const [favouriteState , setfavouriteState] = useState({});
   const [folderState, setFolderState] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -201,7 +202,7 @@ const onPermanateDelete = async(_id , e) => {
   }
 }
 
-const  select_Delete = async() => {
+const   select_Delete = async() => {
   try {
     const response = await changSelectBin(selectItems);
     console.log("res : " , response)
@@ -210,6 +211,7 @@ const  select_Delete = async() => {
       console.error('Error update Selected photos details:', error);
   }
   setIsSelect(false)
+  setSelectItems([])
   fetchPhotos();
 }
 const onSelectAll = async(e , item) => {
@@ -220,6 +222,14 @@ const onSelectAll = async(e , item) => {
       initialState[photo._id] = true;
     });
     await setPhotoState(initialState);
+    const selectedIds = Object.keys(initialState).filter(id => initialState[id]);
+    setSelectItems(selectedIds);
+  }
+  if(item === "favourite"){
+    likedPhoto.forEach(photo => {
+      initialState[photo._id] = true;
+    });
+    await setfavouriteState(initialState);
     const selectedIds = Object.keys(initialState).filter(id => initialState[id]);
     setSelectItems(selectedIds);
   }
@@ -244,6 +254,12 @@ const onUnSelectAll =(e , item) => {
   setPhotoState(initialState);
   setSelectItems([])}
 
+  if(item === "favourite"){
+    likedPhoto.forEach(photo => {
+      initialState[photo._id] = false;
+    });
+    setfavouriteState(initialState);
+    setSelectItems([])}
   if(item === "folder"){
     folderNameImgg.forEach(photo => {
       initialState[photo._id] = false;
@@ -256,6 +272,17 @@ const onSelecttoBin =(e , id , item) => {
   e.stopPropagation();
   if(item === "photo"){
     setPhotoState(prevState => {
+      const newState ={...prevState,
+      [id]: !prevState[id] }
+  
+      const selectedIds = Object.keys(newState).filter(id => newState[id]);
+      setSelectItems(selectedIds);
+  
+      return newState;
+  });
+  }
+  if(item === "favourite"){
+    setfavouriteState(prevState => {
       const newState ={...prevState,
       [id]: !prevState[id] }
   
@@ -284,6 +311,7 @@ const onSelecttoBin =(e , id , item) => {
 const onUnSelectBin = (e , id , item) => {
   e.stopPropagation();
   if(item === "photo"){
+    console.log("pho");
     setPhotoState(prevState => {
       const newState ={ ...prevState,
        [id]: false};
@@ -293,7 +321,19 @@ const onUnSelectBin = (e , id , item) => {
        return newState;
    });
   }
+  if(item === "favourite"){
+    console.log("fav");
+    setfavouriteState(prevState => {
+      const newState ={ ...prevState,
+       [id]: false};
+       const selectedIds = Object.keys(newState).filter(id => newState[id]);
+       setSelectItems(selectedIds);
+   
+       return newState;
+   });
+  }
   if(item === "folder"){
+    console.log("fol");
     setFolderState(prevState => {
       const newState ={ ...prevState,
        [id]: false};
@@ -315,6 +355,14 @@ const photo_back = (e , item) => {
   
   setPhotoState(updatedPhotoState);}
 
+  if(item === "favourite"){
+    const updatedPhotoState = Object.keys(favouriteState).reduce((acc, id) => {
+      acc[id] = false; 
+      return acc;
+    }, {});
+    
+    setfavouriteState(updatedPhotoState);}
+  
   if(item === "folder"){
     const updatedPhotoState = Object.keys(folderState).reduce((acc, id) => {
       acc[id] = false; 
@@ -327,6 +375,8 @@ const photo_back = (e , item) => {
 }
 const allSelected = Object.values(photoState).every(value => value);
 const allFolderSelected = Object.values(folderState).every(value => value);
+const allFavouriteSelected = Object.values(favouriteState).every(value => value);
+
 
 console.log("isSelect :", selectItems)
   return (
@@ -462,10 +512,41 @@ console.log("isSelect :", selectItems)
             currentView === 'like' ? (
               <div>
                 <h1>Favourites</h1>
+                {/* 00 */}
+                {folderNameImgg ? ( !isSelect ? 
+              <button onClick={() => setIsSelect(true)} className='select'>Select <ArrowCircleDown /></button>  : 
+              <div className='selectDelete'>
+                <div className='deleteAll'>
+                  {isSelect && 
+                  (!allFavouriteSelected 
+                  ? <button className=' bacicon ' onClick={(e) => onSelectAll(e , "favourite")}><RadioButtonUnchecked /></button> 
+                  : <button className=' bacicon' onClick={(e) => onUnSelectAll(e, "favourite")}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>) 
+                  }
+                  <button className=' bacicon ' style={{color:"black"}} onClick={(e) => photo_back(e , "favourite")}><KeyboardBackspace />All</button>
+                </div>
+                <h3 >{selectItems.length <= 0 ?  'Select items' : 
+                  <div className='deleteAll'>
+                    <button className=' bacicon' style={{color:"red"}}  onClick={select_Delete}><DeleteOutline  className="icon-large"/></button>
+                    <h6>{selectItems.length} selected</h6>
+                  </div> }
+                </h3> 
+              </div>
+            ):(null)
+            }
+            {/* 00 */}
                 <div className="photos-container">
-                    {likedPhoto.length > 0 ? (
+                    {likedPhoto && likedPhoto.length > 0 ? (
                       likedPhoto.map(liked => (
                       <div key={liked._id} className="photo-item" onClick={() => openModal(liked)}>
+                        {/* 00 */}
+                        <div className='radioIcon'> 
+                        {isSelect && 
+                          (!favouriteState[liked._id] 
+                          ? <button className=' bacicon ' onClick={(e) => onSelecttoBin(e , liked._id , "favourite")}><RadioButtonUnchecked /></button> 
+                          : <button className=' bacicon' onClick={(e) => onUnSelectBin(e , liked._id , "favourite")}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>)
+                         }
+                        </div>
+                        {/* 00 */}
                         <img src={liked.photoUrl} alt='photo' className='img-fluid'/>
                         <div className="imgIcons">
                           <button className=' bacicon' onClick={(e) => onUnLike(liked._id , e , null )}><Favorite className="icon heart-icon" style={{color:"rgb(212, 48, 7)"}}/></button>
