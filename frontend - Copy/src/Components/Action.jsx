@@ -143,7 +143,7 @@ const Action = () => {
             <FontAwesomeIcon icon={faEdit} />
           </button>
         </div>
-        <h1 className="heading">Choose an Action</h1>
+        <h1 className="heading">Image Gallery</h1>
         <div className="button-container">
           <Link className="animated-button" to='/image'>Image</Link>
           {/* <Link className="animated-button" to='/pdf'>PDF</Link> */}

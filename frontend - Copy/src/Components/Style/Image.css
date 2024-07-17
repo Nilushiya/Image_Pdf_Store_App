@@ -28,6 +28,7 @@
 .imgBody{
     display: flex;
     flex-direction: column;
+    padding-bottom: 40%;
      /* align-items: end; */
 }
 .imgBody .imgAddIcon{

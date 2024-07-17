@@ -173,7 +173,7 @@
 }
 
 
-/* .modal {
+.modals {
   position: fixed;
   top: 0;
   left: 0;
@@ -186,12 +186,12 @@
   z-index: 1000;
 }
 
-.modal-content {
+.modal-contents {
   display: flex;
   justify-content: center;
   align-items: center;
 }
- */
+
 
 .full-screen-photo {
   padding: 20px 0px;

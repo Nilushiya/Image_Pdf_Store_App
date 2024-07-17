@@ -10,10 +10,10 @@
 }
 
 body, html {
-  min-height: 100%;
+  min-height: 100vh;
   font-family: 'Roboto', sans-serif;
   /* overflow: hidden;  */
-  background: linear-gradient(45deg, #0099ff, #33cc33);
+  background: linear-gradient(45deg, #b4b8b9, #b4b8b9);
   /* width: 100vw; */
   display: flex;
   flex-direction: column;
@@ -22,7 +22,7 @@ body, html {
 
 .homepage {
   /* width: 100vw; */
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;

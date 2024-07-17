@@ -3,7 +3,7 @@ import {  DeleteOutline ,  Restore } from '@mui/icons-material';
 
 
 const Bin = ({binedPhoto , openModal, onUnDelete, onPermanateDelete}) => {
-    console.log("bindPhotos")
+    // console.log("bindPhotos")
   return (
     <div>
         <h1>Recycle bin</h1>

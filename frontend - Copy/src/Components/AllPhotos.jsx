@@ -73,21 +73,22 @@ const AllPhotos = ({ view }) => {
     }
   
   }, [detailsPhotos]);
-  console.log("photoState : ", photoState)
+  // console.log("photoState : ", photoState)
 
   useEffect(() => {
-    console.log("folder")
+    // console.log("folder")
     const initialState = {};
     if(folderNameImgg){
       folderNameImgg.forEach(photo => {
         initialState[photo._id] = false;
       });
-          Object.keys(folderState).forEach(key => {
+      Object.keys(folderState).forEach(key => {
       initialState[key] = false;
     });
       setFolderState(initialState);
+      // folderImgShow()
     }
-  
+    
   }, [folderNameImgg],[]);
 
 useEffect(() => {
@@ -100,7 +101,7 @@ useEffect(() => {
   }
 
 }, [likedPhoto]);
-console.log("folderState : ", folderState)
+// console.log("folderState : ", folderState)
 
   const fetchPhotos = async () => {
     try {
@@ -140,7 +141,7 @@ const fetchBin = async () => {
   try {
       const response = await fetchBinDetails();
       const binedPhotos = response.data.bindPhotos;
-      console.log("folder if dele",binedPhotos)
+      // console.log("folder if dele",binedPhotos)
       setBinedPhoto(binedPhotos);
   } catch (error) {
       console.error('Error fetching deleted photos details:', error);
@@ -148,7 +149,7 @@ const fetchBin = async () => {
 };
 
 const folderImgShow = async(folder) => {
-  console.log("open");
+  // console.log("open");
   setFolderImg(true)
   try {
     const response = await fetchfolderNameDetails(folder);
@@ -182,7 +183,7 @@ const onLike = async(_id , e , folder) => {
     const response = await changeLike(_id);
     fetchPhotos();
     if(folder != 'null'){
-  console.log("folder :",folder)
+  // console.log("folder :",folder)
   folderImgShow(folder)
     }
   } catch (error) {
@@ -199,7 +200,7 @@ const onUnLike = async(_id , e , folder ) => {
     fetchPhotos();
     fetchLike();
     if(folder != 'null'){
-  console.log("folder :",folder)
+  // console.log("folder :",folder)
   folderImgShow(folder)
     }
 
@@ -214,7 +215,7 @@ const onBin = async(_id , e , folder) => {
     const response = await changBin(_id);
     fetchPhotos();
     if(folder != 'null'){
-      console.log("folder :",folder)
+      // console.log("folder :",folder)
       folderImgShow(folder)
         }
   } catch (error) {
@@ -246,19 +247,21 @@ const   select_Delete = async(items) => {
   try {
     if(items === "photo"){
     const response = await changSelectBin(selectItems);
-    console.log("res : " , response)
+    // console.log("res : " , response)
     setIsSelect(false)
     fetchPhotos();
     }
     if(items === "favourite"){
       const response = await changSelectBin(selectLikeItems);
-      console.log("res : " , response)
+      // console.log("res : " , response)
       setIsLikeSelect(false)
+      fetchLike()
       }
     if(items === "folder"){
         const response = await changSelectBin(selectfolderItems);
-        console.log("res : " , response)
+        // console.log("res : " , response)
         setIsFolderSelect(false)
+        folderImgShow()
         }  
     }
   catch (error) {
@@ -286,7 +289,7 @@ const onSelectAll = async(e , item) => {
     setLikeSelectItems(selectedIds);
   }
   if(item === "folder"){
-    console.log("okay ")
+    // console.log("okay ")
     folderNameImgg.forEach(photo => {
       initialState[photo._id] = true;
     });
@@ -355,9 +358,6 @@ const onSelecttoBin =(e , id , item) => {
       return newState;
   });
   }
-  
-
-  // setIsSelected(true)
 }
  
 const onUnSelectBin = (e , id , item) => {
@@ -428,18 +428,18 @@ const photo_back = (e , item) => {
     }, {});
     
   setFolderState(updatedPhotoState);
-  setSelectfolderItems([])   //********* */
+  setSelectfolderItems([])   
   setIsFolderSelect(false)
 } 
   
 }
 const allSelected = Object.values(photoState).every(value => value);
-console.log("allSelected :", allSelected  )
+// console.log("allSelected :", allSelected  )
 const allFolderSelected = Object.values(folderState).every(value => value);
 const allFavouriteSelected = Object.values(favouriteState).every(value => value);
 
 
-console.log("isSelect :", selectItems)
+// console.log("isSelect :", selectItems)
   return (
     <>
       <div className="photoBody">
@@ -493,7 +493,7 @@ console.log("isSelect :", selectItems)
                     </div>
                   ))
                 ) : (
-                  <p>No photos available</p>
+                  <p>No photos availableeee</p>
                 )}
              </div>
           </div>) 
@@ -521,7 +521,7 @@ console.log("isSelect :", selectItems)
                 <h1>Folder Images</h1>
                 <button className=' backicon' onClick={onBack}><ArrowBackSharp />Back to folder</button>
                 {/* 00 */}
-                {folderNameImgg ? ( !isFolderSelect ? 
+                {folderNameImgg && folderNameImgg.length > 0 ? ( !isFolderSelect ? 
                   <button onClick={() => setIsFolderSelect(true)} className='selects'>Select <ArrowCircleDown /></button>  : 
                     <div className='selectDeletes'>
                       <div className='deleteAll'>
@@ -575,7 +575,7 @@ console.log("isSelect :", selectItems)
               <div>
                 <h1>Favourites</h1>
                 {/* 00 */}
-                {folderNameImgg ? ( !isLikeSelect ? 
+                {likedPhoto && likedPhoto.length > 0 ? ( !isLikeSelect ? 
               <button onClick={() => setIsLikeSelect(true)} className='select'>Select <ArrowCircleDown /></button>  : 
               <div className='selectDelete'>
                 <div className='deleteAll'>
@@ -636,8 +636,8 @@ console.log("isSelect :", selectItems)
       </div>
 
       {isModalOpen && selectedPhoto && (
-        <div className="modal" onClick={closeModal} style={{color:"red"}}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modals" onClick={closeModal} style={{color:"red"}}>
+          <div className="modal-contents" onClick={(e) => e.stopPropagation()}>
             <span className="close" onClick={closeModal}>&times;</span>
             <img src={selectedPhoto.photoUrl} alt='photo' className="full-screen-photo" />
           </div>
