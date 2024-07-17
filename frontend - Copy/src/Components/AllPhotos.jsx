@@ -6,6 +6,8 @@ import { AddAPhotoOutlined, FolderOutlined, FavoriteBorder, DeleteOutline , Arro
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import LoadingAnimation from './LoadingAnimation';
+import Bin from './Bin';
+
 const AllPhotos = ({ view }) => {
   const [currentView, setCurrentView] = useState(view);
   const [folderName , setFolderName] = useState([]);
@@ -36,19 +38,25 @@ const AllPhotos = ({ view }) => {
 
   useEffect(() => {
     setCurrentView(view);
+    const initialState = {};
 
     if (view === 'photos') {
       fetchPhotos();
-      // setSelectItems([])
+      setSelectItems([])
     }
     if (view === 'folder'){
       fetchFolder();
-      // setSelectfolderItems([])
+      setSelectfolderItems([])
+      if(folderState){
+        Object.keys(folderState).forEach(key => {
+        initialState[key] = false;
+        });
+        setFolderState(initialState);
+      }
     }
     if (view === 'like'){
-      // console.log("folder if")
       fetchLike();
-      // setLikeSelectItems([])
+      setLikeSelectItems([])
     }
     if (view === 'delete'){
       fetchBin();
@@ -68,16 +76,19 @@ const AllPhotos = ({ view }) => {
   console.log("photoState : ", photoState)
 
   useEffect(() => {
+    console.log("folder")
     const initialState = {};
     if(folderNameImgg){
       folderNameImgg.forEach(photo => {
         initialState[photo._id] = false;
       });
+          Object.keys(folderState).forEach(key => {
+      initialState[key] = false;
+    });
       setFolderState(initialState);
     }
   
-  }, [folderNameImgg]);
-console.log("folderState : ", folderState)
+  }, [folderNameImgg],[]);
 
 useEffect(() => {
   const initialState = {};
@@ -88,7 +99,7 @@ useEffect(() => {
     setfavouriteState(initialState);
   }
 
-}, [folderNameImgg]);
+}, [likedPhoto]);
 console.log("folderState : ", folderState)
 
   const fetchPhotos = async () => {
@@ -149,7 +160,7 @@ const folderImgShow = async(folder) => {
 }
 }
 
-const openModal = (photo) => {
+ const openModal = (photo) => {
   console.log('photo : ' , photo);
   setSelectedPhoto(photo);
   setIsModalOpen(true);
@@ -211,7 +222,7 @@ const onBin = async(_id , e , folder) => {
   }
 }
 
-const onUnDelete = async(_id , e) => {
+ const onUnDelete = async(_id , e) => {
   e.stopPropagation();
   try {
     const response = await changUnBin(_id);
@@ -221,7 +232,7 @@ const onUnDelete = async(_id , e) => {
   }
 }
 
-const onPermanateDelete = async(_id , e) => {
+ const onPermanateDelete = async(_id , e) => {
   e.stopPropagation();
   try {
     const response = await deleteById(_id);
@@ -511,25 +522,25 @@ console.log("isSelect :", selectItems)
                 <button className=' backicon' onClick={onBack}><ArrowBackSharp />Back to folder</button>
                 {/* 00 */}
                 {folderNameImgg ? ( !isFolderSelect ? 
-              <button onClick={() => setIsFolderSelect(true)} className='selects'>Select <ArrowCircleDown /></button>  : 
-              <div className='selectDeletes'>
-                <div className='deleteAll'>
-                  {isFolderSelect && 
-                  (!allFolderSelected 
-                  ? <button className=' bacicon ' onClick={(e) => onSelectAll(e , "folder")}><RadioButtonUnchecked /></button> 
-                  : <button className=' bacicon' onClick={(e) => onUnSelectAll(e, "folder")}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>) 
-                  }
-                  <button className=' bacicon ' style={{color:"black"}} onClick={(e) => photo_back(e , "folder")}><KeyboardBackspace />All</button>
-                </div>
-                <h3 >{selectfolderItems.length <= 0 ?  'Select items' : 
-                  <div className='deleteAll'>
-                    <button className=' bacicon' style={{color:"red"}}  onClick={() => select_Delete("folder")}><DeleteOutline  className="icon-large"/></button>
-                    <h6>{selectfolderItems.length} selected</h6>
-                  </div> }
-                </h3> 
-              </div>
-            ):(null)
-            }
+                  <button onClick={() => setIsFolderSelect(true)} className='selects'>Select <ArrowCircleDown /></button>  : 
+                    <div className='selectDeletes'>
+                      <div className='deleteAll'>
+                        {isFolderSelect && 
+                        (!allFolderSelected 
+                        ? <button className=' bacicon ' onClick={(e) => onSelectAll(e , "folder")}><RadioButtonUnchecked /></button> 
+                        : <button className=' bacicon' onClick={(e) => onUnSelectAll(e, "folder")}><TaskAlt style={{color:"rgb(212, 48, 7)"}}/></button>) 
+                        }
+                        <button className=' bacicon ' style={{color:"black"}} onClick={(e) => photo_back(e , "folder")}><KeyboardBackspace />All</button>
+                      </div>
+                      <h3 >{selectfolderItems.length <= 0 ?  'Select items' : 
+                        <div className='deleteAll'>
+                          <button className=' bacicon' style={{color:"red"}}  onClick={() => select_Delete("folder")}><DeleteOutline  className="icon-large"/></button>
+                          <h6>{selectfolderItems.length} selected</h6>
+                        </div> }
+                      </h3> 
+                    </div>
+                  ):(null)
+                }
             {/* 00 */}
                 <div className="photos-container">
                   {folderNameImgg && folderNameImgg.length  > 0 ? (
@@ -612,24 +623,12 @@ console.log("isSelect :", selectItems)
               </div>
              ) : (
               currentView === 'delete' ? (
-                <div>
-                  <h1>Recycle bin</h1>
-                  <div className="photos-container">
-                    {binedPhoto.length > 0 ? (
-                      binedPhoto.map(bined => (
-                        <div key={bined._id} className="photo-item" onClick={() => openModal(bined)}> 
-                          <img src={bined.photoUrl} alt='photo' className='img-fluid'/>
-                          <div className="imgIcons">
-                            <button className=' bacicon' onClick={(e) => onUnDelete(bined._id , e)}><Restore className="icon heart-icon" /></button>
-                            <button className=' bacicon' onClick={(e) => onPermanateDelete(bined._id , e)}><DeleteOutline className="icon heart-icon" /></button>
-                          </div>
-                        </div>
-                      ))
-                      ) : (
-                      <p>No deleteded photos available</p>
-                    )}
-                  </div>
-                </div>
+                <Bin 
+                binedPhoto = {binedPhoto}
+                openModal={openModal}
+                onUnDelete={onUnDelete}
+                onPermanateDelete={onPermanateDelete}
+                />
                ) : (
                 null
               )
