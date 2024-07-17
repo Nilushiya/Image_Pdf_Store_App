@@ -1,8 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 @import '~@fortawesome/fontawesome-free/css/all.min.css';
-
-
 * {
   margin: 0;
   padding: 0;
@@ -13,6 +11,7 @@ body, html {
   min-height: 100vh;
   font-family: 'Roboto', sans-serif;
   /* overflow: hidden;  */
+  
   background: linear-gradient(45deg, #b4b8b9, #b4b8b9);
   /* width: 100vw; */
   display: flex;

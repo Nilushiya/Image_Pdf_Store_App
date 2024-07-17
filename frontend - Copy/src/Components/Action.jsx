@@ -145,7 +145,7 @@ const Action = () => {
         </div>
         <h1 className="heading">Image Gallery</h1>
         <div className="button-container">
-          <Link className="animated-button" to='/image'>Image</Link>
+          <Link className="animated-button" to='/image'>Images</Link>
           {/* <Link className="animated-button" to='/pdf'>PDF</Link> */}
         </div>
       </div>
